@@ -1,6 +1,8 @@
 package callback;
 
 import callback.beans.Job;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -25,7 +27,7 @@ public class CallbackController {
 
     @RequestMapping(value = "/callback", method = POST)
     @ResponseBody
-    public void postResponse(@RequestBody String job) {
+    public void postCallack(@RequestBody String job) {
         System.out.println(job);
     }
 
@@ -33,6 +35,12 @@ public class CallbackController {
     @ResponseBody
     public String error(@RequestBody Job job) {
         return "I can haz err";
+    }
+
+    @RequestMapping(value = "/callback-error", method = POST)
+    @ResponseBody
+    public ResponseEntity<Object> postCallbackError(@RequestBody String job) {
+        return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS).body(null);
     }
 
 }
