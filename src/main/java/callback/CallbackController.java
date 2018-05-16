@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.concurrent.atomic.AtomicLong;
 
+import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 @RestController
@@ -24,7 +25,14 @@ public class CallbackController {
 
     @RequestMapping(value = "/callback", method = POST)
     @ResponseBody
-    public void postResponse(@RequestBody Job job) {
+    public void postResponse(@RequestBody String job) {
         System.out.println(job);
     }
+
+    @RequestMapping(value = "/error", method = GET)
+    @ResponseBody
+    public String error(@RequestBody Job job) {
+        return "I can haz err";
+    }
+
 }
