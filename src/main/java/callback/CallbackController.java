@@ -37,11 +37,11 @@ public class CallbackController {
         return "I can haz err";
     }
 
-    @RequestMapping(value = "/callback-error", method = POST)
+    @RequestMapping(value = "/callback-too-many-requests", method = POST)
     @ResponseBody
     public ResponseEntity<Object> postCallbackError(@RequestBody String job) {
         return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS).body(null);
     }
-    
+
 
 }
