@@ -20,8 +20,8 @@ public class CallbackController {
 
   @RequestMapping(value = "/callback", method = POST)
   @ResponseBody
-  public void postCallack(@RequestBody Job job) {
-    LOG.info("Received callback for job [" + job.toString() + "].");
+  public void postCallack(@RequestBody String job) {
+    LOG.info("Received callback for job [" + job + "].");
   }
 
   @RequestMapping(value = "/callback-too-many-requests", method = POST)
