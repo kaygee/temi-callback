@@ -32,10 +32,10 @@ public class CallbackController {
     return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS).body(null);
   }
 
-  @RequestMapping(value = "/callback-gone", method = POST)
+  @RequestMapping(value = "/callback-unauthorized", method = POST)
   @ResponseBody
   public ResponseEntity<Object> postCallbackGone(@RequestBody String job) {
     LOG.info("Received 401 callback for job [" + job + "].");
-    return ResponseEntity.status(HttpStatus.GONE).body(null);
+    return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
   }
 }
