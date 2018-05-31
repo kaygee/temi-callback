@@ -1,8 +1,10 @@
 package callback.beans;
 
+import callback.deserializer.MultiDateDeserializer;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 import java.util.Date;
 import java.util.Objects;
@@ -16,10 +18,13 @@ public class Job {
     @JsonProperty("status")
     public JobStatus status;
 
-    @JsonProperty("failure_reason")
-    public String failureReason;
+    @JsonProperty("failure")
+    public String failure;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+    @JsonProperty("failure_detail")
+    public String failureDetail;
+
+    @JsonDeserialize(using = MultiDateDeserializer.class)
     @JsonProperty("created_on")
     public Date createdOn;
 
@@ -38,32 +43,41 @@ public class Job {
     @JsonProperty("metadata")
     public String metadata;
 
-    @JsonProperty("last_modified")
-    public String lastModified;
+    @JsonProperty("last_modified_on")
+    public String lastModifiedOn;
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Job job = (Job) o;
-        return Objects.equals(id, job.id) && Objects.equals(status, job.status) && Objects.equals(failureReason, job
-                .failureReason) && Objects.equals(createdOn, job.createdOn) && Objects.equals(webUrl, job.webUrl) &&
-                Objects.equals(durationSeconds, job.durationSeconds) && Objects.equals(name, job.name) && Objects
-                .equals(callbackUrl, job.callbackUrl) && Objects.equals(metadata, job.metadata) && Objects.equals
-                (lastModified, job.lastModified);
+        return Objects.equals(id, job.id)
+                && status == job.status
+                && Objects.equals(failure, job.failure)
+                && Objects.equals(failureDetail, job.failureDetail)
+                && Objects.equals(createdOn, job.createdOn)
+                && Objects.equals(webUrl, job.webUrl)
+                && Objects.equals(durationSeconds, job.durationSeconds)
+                && Objects.equals(name, job.name)
+                && Objects.equals(callbackUrl, job.callbackUrl)
+                && Objects.equals(metadata, job.metadata)
+                && Objects.equals(lastModifiedOn, job.lastModifiedOn);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, status, failureReason, createdOn, webUrl, durationSeconds, name, callbackUrl,
-                metadata, lastModified);
-    }
 
-    @Override
-    public String toString() {
-        return "Job{" + "id='" + id + '\'' + ", status=" + status + ", failureReason='" + failureReason + '\'' + ", " +
-                "createdOn=" + createdOn + ", webUrl='" + webUrl + '\'' + ", durationSeconds=" + durationSeconds + "," +
-                " name='" + name + '\'' + ", callbackUrl='" + callbackUrl + '\'' + ", metadata='" + metadata + '\'' +
-                ", lastModified='" + lastModified + '\'' + '}';
+        return Objects.hash(
+                id,
+                status,
+                failure,
+                failureDetail,
+                createdOn,
+                webUrl,
+                durationSeconds,
+                name,
+                callbackUrl,
+                metadata,
+                lastModifiedOn);
     }
 }
