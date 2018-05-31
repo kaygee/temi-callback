@@ -47,6 +47,23 @@ public class Job {
     public String lastModifiedOn;
 
     @Override
+    public String toString() {
+        return "Job{" +
+                "id='" + id + '\'' +
+                ", status=" + status +
+                ", failure='" + failure + '\'' +
+                ", failureDetail='" + failureDetail + '\'' +
+                ", createdOn=" + createdOn +
+                ", webUrl='" + webUrl + '\'' +
+                ", durationSeconds=" + durationSeconds +
+                ", name='" + name + '\'' +
+                ", callbackUrl='" + callbackUrl + '\'' +
+                ", metadata='" + metadata + '\'' +
+                ", lastModifiedOn='" + lastModifiedOn + '\'' +
+                '}';
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
