@@ -20,13 +20,22 @@ public class CallbackController {
 
   @RequestMapping(value = "/callback", method = POST)
   @ResponseBody
-  public void postCallack(@RequestBody String job) {
-    LOG.info("Received callback for job [" + job + "].");
+  public ResponseEntity<Object> postCallack(@RequestBody String job) {
+    LOG.info("Received HTTP 200 callback for job [" + job + "].");
+    return ResponseEntity.status(HttpStatus.OK).body(null);
   }
 
   @RequestMapping(value = "/callback-too-many-requests", method = POST)
   @ResponseBody
-  public ResponseEntity<Object> postCallbackError(@RequestBody String job) {
+  public ResponseEntity<Object> postCallbackTooManyRequests(@RequestBody String job) {
+    LOG.info("Received 429 callback for job [" + job + "].");
     return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS).body(null);
+  }
+
+  @RequestMapping(value = "/callback-gone", method = POST)
+  @ResponseBody
+  public ResponseEntity<Object> postCallbackGone(@RequestBody String job) {
+    LOG.info("Received 401 callback for job [" + job + "].");
+    return ResponseEntity.status(HttpStatus.GONE).body(null);
   }
 }
