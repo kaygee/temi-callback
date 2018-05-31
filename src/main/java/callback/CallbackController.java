@@ -25,11 +25,11 @@ public class CallbackController {
     return ResponseEntity.status(HttpStatus.OK).body(null);
   }
 
-  @RequestMapping(value = "/callback-too-many-requests", method = POST)
+  @RequestMapping(value = "/callback-bad-request", method = POST)
   @ResponseBody
   public ResponseEntity<Object> postCallbackTooManyRequests(@RequestBody String job) {
-    LOG.info("Received 429 callback for job [" + job + "].");
-    return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS).body(null);
+    LOG.info("Received 400 callback for job [" + job + "].");
+    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
   }
 
   @RequestMapping(value = "/callback-unauthorized", method = POST)
