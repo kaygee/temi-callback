@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 @RestController
@@ -35,5 +36,11 @@ public class CallbackController {
   public ResponseEntity<Object> postCallbackUnauthorized(@RequestBody String job) {
     LOG.info("Received 401 callback for job [" + job + "].");
     return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+  }
+
+  @RequestMapping(value = "/internal-server-error", method = GET)
+  @ResponseBody
+  public ResponseEntity<Object> getInternalServerError() {
+    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
   }
 }
