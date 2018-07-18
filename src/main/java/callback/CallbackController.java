@@ -43,4 +43,10 @@ public class CallbackController {
   public ResponseEntity<Object> getInternalServerError() {
     return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
   }
+
+  @RequestMapping(value = "/gone")
+  @ResponseBody
+  public ResponseEntity<Object> respondWithGone() {
+    return ResponseEntity.status(HttpStatus.GONE).body(null);
+  }
 }
