@@ -38,7 +38,9 @@ public class CallbackController {
     return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
   }
 
-  @RequestMapping(value = "/internal-server-error", method = GET)
+  @RequestMapping(
+      value = "/internal-server-error",
+      method = {GET, POST})
   @ResponseBody
   public ResponseEntity<Object> getInternalServerError() {
     return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
