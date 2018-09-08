@@ -1,12 +1,8 @@
 package callback.beans;
 
-import callback.deserializer.MultiDateDeserializer;
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
-import java.util.Date;
 import java.util.Objects;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -24,9 +20,8 @@ public class Job {
     @JsonProperty("failure_detail")
     public String failureDetail;
 
-    @JsonDeserialize(using = MultiDateDeserializer.class)
     @JsonProperty("created_on")
-    public Date createdOn;
+    public String createdOn;
 
     @JsonProperty("web_url")
     public String webUrl;
