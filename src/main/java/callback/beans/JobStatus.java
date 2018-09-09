@@ -14,7 +14,7 @@ public enum JobStatus {
     TRANSCRIBED("transcribed"),
 
     @JsonProperty("inProgress")
-    IN_PROGRESS("inProgress");
+    INPROGRESS("inProgress");
 
     // @formatter:on
 

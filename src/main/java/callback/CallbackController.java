@@ -2,9 +2,9 @@ package callback;
 
 import callback.beans.Job;
 import callback.beans.JobCallback;
+import callback.beans.JobStatus;
 import callback.exception.JobNotFoundException;
 import callback.repository.JobRepository;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
-import java.io.IOException;
 import java.util.List;
 
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
@@ -37,9 +36,22 @@ public class CallbackController {
     return jobRepository.findAll();
   }
 
-  @PostMapping("/jobs/{id}")
+  @PostMapping("/jobs/job/{id}")
   public List<Job> getJobById(@PathVariable(value = "id") String id) {
-    return jobRepository.findByJobId(id);
+    try {
+      return jobRepository.findByJobId(id);
+    } catch (IllegalArgumentException e) {
+      throw new JobNotFoundException("Job ID", id);
+    }
+  }
+
+  @PostMapping("/jobs/status/{status}")
+  public List<Job> getJobByStatus(@PathVariable(value = "status") String jobStatus) {
+    try {
+      return jobRepository.findByJobStatus(JobStatus.valueOf(jobStatus.toUpperCase()));
+    } catch (IllegalArgumentException e) {
+      throw new JobNotFoundException("Job Status", jobStatus);
+    }
   }
 
   @RequestMapping(

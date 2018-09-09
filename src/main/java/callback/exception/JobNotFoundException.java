@@ -17,6 +17,12 @@ public class JobNotFoundException extends RuntimeException {
     this.fieldValue = fieldValue;
   }
 
+  public JobNotFoundException(String fieldName, Object fieldValue) {
+    super(String.format("%s not found with %s'", fieldName, fieldValue));
+    this.fieldName = fieldName;
+    this.fieldValue = fieldValue;
+  }
+
   public String getResourceName() {
     return resourceName;
   }
