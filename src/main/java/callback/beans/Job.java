@@ -2,94 +2,237 @@ package callback.beans;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import org.springframework.lang.NonNull;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import javax.validation.constraints.NotBlank;
 import java.util.Objects;
 
+@Entity
+@Table(name = "jobs")
+@EntityListeners(AuditingEntityListener.class)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Job {
 
-    @JsonProperty("id")
-    public String id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long databaseId;
 
-    @JsonProperty("status")
-    public JobStatus status;
+  @NotBlank
+  @Column(name = "id")
+  @JsonProperty("id")
+  private String id;
 
-    @JsonProperty("failure")
-    public String failure;
+  @NonNull
+  @Enumerated(EnumType.STRING)
+  @Column(name = "status")
+  @JsonProperty("status")
+  private JobStatus status;
 
-    @JsonProperty("failure_detail")
-    public String failureDetail;
+  @Column(name = "failure")
+  @JsonProperty("failure")
+  private String failure;
 
-    @JsonProperty("created_on")
-    public String createdOn;
+  @Column(name = "failure_detail")
+  @JsonProperty("failure_detail")
+  private String failureDetail;
 
-    @JsonProperty("web_url")
-    public String webUrl;
+  @NotBlank
+  @Column(name = "web_url")
+  @JsonProperty("web_url")
+  private String webUrl;
 
-    @JsonProperty("duration_seconds")
-    public Long durationSeconds;
+  @Column(name = "duration_seconds")
+  @JsonProperty("duration_seconds")
+  private Long durationSeconds;
 
-    @JsonProperty("name")
-    public String name;
+  @Column(name = "name")
+  @JsonProperty("name")
+  private String name;
 
-    @JsonProperty("callback_url")
-    public String callbackUrl;
+  @Column(name = "callback_url")
+  @JsonProperty("callback_url")
+  private String callbackUrl;
 
-    @JsonProperty("metadata")
-    public String metadata;
+  @Column(name = "metadata")
+  @JsonProperty("metadata")
+  private String metadata;
 
-    @JsonProperty("last_modified_on")
-    public String lastModifiedOn;
+  @Column(name = "created_on")
+  @JsonProperty("created_on")
+  private String createdOn;
 
-    @Override
-    public String toString() {
-        return "Job{" +
-                "id='" + id + '\'' +
-                ", status=" + status +
-                ", failure='" + failure + '\'' +
-                ", failureDetail='" + failureDetail + '\'' +
-                ", createdOn=" + createdOn +
-                ", webUrl='" + webUrl + '\'' +
-                ", durationSeconds=" + durationSeconds +
-                ", name='" + name + '\'' +
-                ", callbackUrl='" + callbackUrl + '\'' +
-                ", metadata='" + metadata + '\'' +
-                ", lastModifiedOn='" + lastModifiedOn + '\'' +
-                '}';
-    }
+  @Column(name = "last_modified_on")
+  @JsonProperty("last_modified_on")
+  private String lastModifiedOn;
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Job job = (Job) o;
-        return Objects.equals(id, job.id)
-                && status == job.status
-                && Objects.equals(failure, job.failure)
-                && Objects.equals(failureDetail, job.failureDetail)
-                && Objects.equals(createdOn, job.createdOn)
-                && Objects.equals(webUrl, job.webUrl)
-                && Objects.equals(durationSeconds, job.durationSeconds)
-                && Objects.equals(name, job.name)
-                && Objects.equals(callbackUrl, job.callbackUrl)
-                && Objects.equals(metadata, job.metadata)
-                && Objects.equals(lastModifiedOn, job.lastModifiedOn);
-    }
+  public String getId() {
+    return id;
+  }
 
-    @Override
-    public int hashCode() {
+  public void setId(String id) {
+    this.id = id;
+  }
 
-        return Objects.hash(
-                id,
-                status,
-                failure,
-                failureDetail,
-                createdOn,
-                webUrl,
-                durationSeconds,
-                name,
-                callbackUrl,
-                metadata,
-                lastModifiedOn);
-    }
+  public JobStatus getStatus() {
+    return status;
+  }
+
+  public void setStatus(JobStatus status) {
+    this.status = status;
+  }
+
+  public String getFailure() {
+    return failure;
+  }
+
+  public void setFailure(String failure) {
+    this.failure = failure;
+  }
+
+  public String getFailureDetail() {
+    return failureDetail;
+  }
+
+  public void setFailureDetail(String failureDetail) {
+    this.failureDetail = failureDetail;
+  }
+
+  public String getCreatedOn() {
+    return createdOn;
+  }
+
+  public void setCreatedOn(String createdOn) {
+    this.createdOn = createdOn;
+  }
+
+  public String getWebUrl() {
+    return webUrl;
+  }
+
+  public void setWebUrl(String webUrl) {
+    this.webUrl = webUrl;
+  }
+
+  public Long getDurationSeconds() {
+    return durationSeconds;
+  }
+
+  public void setDurationSeconds(Long durationSeconds) {
+    this.durationSeconds = durationSeconds;
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  public void setName(String name) {
+    this.name = name;
+  }
+
+  public String getCallbackUrl() {
+    return callbackUrl;
+  }
+
+  public void setCallbackUrl(String callbackUrl) {
+    this.callbackUrl = callbackUrl;
+  }
+
+  public String getMetadata() {
+    return metadata;
+  }
+
+  public void setMetadata(String metadata) {
+    this.metadata = metadata;
+  }
+
+  public String getLastModifiedOn() {
+    return lastModifiedOn;
+  }
+
+  public void setLastModifiedOn(String lastModifiedOn) {
+    this.lastModifiedOn = lastModifiedOn;
+  }
+
+  @Override
+  public String toString() {
+    return "Job{"
+        + "id='"
+        + id
+        + '\''
+        + ", status="
+        + status
+        + ", failure='"
+        + failure
+        + '\''
+        + ", failureDetail='"
+        + failureDetail
+        + '\''
+        + ", createdOn="
+        + createdOn
+        + ", webUrl='"
+        + webUrl
+        + '\''
+        + ", durationSeconds="
+        + durationSeconds
+        + ", name='"
+        + name
+        + '\''
+        + ", callbackUrl='"
+        + callbackUrl
+        + '\''
+        + ", metadata='"
+        + metadata
+        + '\''
+        + ", lastModifiedOn='"
+        + lastModifiedOn
+        + '\''
+        + '}';
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    Job job = (Job) o;
+    return Objects.equals(id, job.id)
+        && status == job.status
+        && Objects.equals(failure, job.failure)
+        && Objects.equals(failureDetail, job.failureDetail)
+        && Objects.equals(createdOn, job.createdOn)
+        && Objects.equals(webUrl, job.webUrl)
+        && Objects.equals(durationSeconds, job.durationSeconds)
+        && Objects.equals(name, job.name)
+        && Objects.equals(callbackUrl, job.callbackUrl)
+        && Objects.equals(metadata, job.metadata)
+        && Objects.equals(lastModifiedOn, job.lastModifiedOn);
+  }
+
+  @Override
+  public int hashCode() {
+
+    return Objects.hash(
+        id,
+        status,
+        failure,
+        failureDetail,
+        createdOn,
+        webUrl,
+        durationSeconds,
+        name,
+        callbackUrl,
+        metadata,
+        lastModifiedOn);
+  }
 }

@@ -9,7 +9,15 @@ import java.util.Objects;
 public class JobCallback {
 
   @JsonProperty("job")
-  public Job job;
+  private Job job;
+
+  public Job getJob() {
+    return job;
+  }
+
+  public void setJob(Job job) {
+    this.job = job;
+  }
 
   @Override
   public String toString() {
