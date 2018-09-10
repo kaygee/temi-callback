@@ -7,26 +7,23 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 
 public enum JobStatus {
+  @JsonProperty("failed")
+  FAILED("failed"),
 
-    // @formatter:off
+  @JsonProperty("transcribed")
+  TRANSCRIBED("transcribed"),
 
-    @JsonProperty("transcribed")
-    TRANSCRIBED("transcribed"),
+  @JsonProperty("inProgress")
+  INPROGRESS("inProgress");
 
-    @JsonProperty("inProgress")
-    INPROGRESS("inProgress");
+  private final String val;
 
-    // @formatter:on
+  JobStatus(String val) {
+    this.val = val;
+  }
 
-    private final String val;
-
-    JobStatus(String val) {
-        this.val = val;
-    }
-
-    @Override
-    public String toString() {
-        return val;
-    }
-
+  @Override
+  public String toString() {
+    return val;
+  }
 }
