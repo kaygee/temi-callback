@@ -58,7 +58,7 @@ public class CallbackController {
       value = "/successful",
       method = {GET, POST})
   @ResponseBody
-  public ResponseEntity<Object> respondSuccessful(@Valid @RequestBody JobCallback jobCallback) {
+  public ResponseEntity<Object> respondSuccessful(@RequestBody JobCallback jobCallback) {
     jobRepository.save(jobCallback.getJob());
     return ResponseEntity.status(HttpStatus.OK).body(null);
   }
@@ -76,7 +76,7 @@ public class CallbackController {
       value = "/bad-request",
       method = {GET, POST})
   @ResponseBody
-  public ResponseEntity<Object> respondBadRequest(@Valid @RequestBody JobCallback jobCallback) {
+  public ResponseEntity<Object> respondBadRequest(@RequestBody JobCallback jobCallback) {
     jobRepository.save(jobCallback.getJob());
     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
   }
@@ -85,7 +85,7 @@ public class CallbackController {
       value = "/unauthorized",
       method = {GET, POST})
   @ResponseBody
-  public ResponseEntity<Object> respondUnauthorized(@Valid @RequestBody JobCallback jobCallback) {
+  public ResponseEntity<Object> respondUnauthorized(@RequestBody JobCallback jobCallback) {
     jobRepository.save(jobCallback.getJob());
     return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
   }
@@ -104,7 +104,7 @@ public class CallbackController {
       value = "/gone",
       method = {GET, POST})
   @ResponseBody
-  public ResponseEntity<Object> respondGone(@Valid @RequestBody JobCallback jobCallback) {
+  public ResponseEntity<Object> respondGone(@RequestBody JobCallback jobCallback) {
     jobRepository.save(jobCallback.getJob());
     return ResponseEntity.status(HttpStatus.GONE).body(null);
   }
