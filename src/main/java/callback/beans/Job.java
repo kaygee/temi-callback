@@ -1,28 +1,24 @@
 package callback.beans;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.lang.NonNull;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EntityListeners;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import java.util.Date;
 import java.util.Objects;
 
 @Entity
 @Table(name = "jobs")
 @EntityListeners(AuditingEntityListener.class)
 @JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonIgnoreProperties(
+    value = {"received_at"},
+    allowGetters = true)
 public class Job {
 
   @Id
@@ -76,6 +72,19 @@ public class Job {
   @Column(name = "last_modified_on")
   @JsonProperty("last_modified_on")
   private String lastModifiedOn;
+
+  @Column(name = "received_at", nullable = false)
+  @LastModifiedDate
+  @Temporal(TemporalType.TIMESTAMP)
+  private Date receivedAt;
+
+  public Date getReceivedAt() {
+    return receivedAt;
+  }
+
+  public void setReceivedAt(Date receivedAt) {
+    this.receivedAt = receivedAt;
+  }
 
   public String getId() {
     return id;
