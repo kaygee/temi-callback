@@ -59,6 +59,7 @@ public class CallbackController {
       method = {GET, POST})
   @ResponseBody
   public ResponseEntity<Object> respondSuccessful(@Valid @RequestBody JobCallback jobCallback) {
+    LOG.info(jobCallback.getJob().toString());
     jobRepository.save(jobCallback.getJob());
     return ResponseEntity.status(HttpStatus.OK).body(null);
   }

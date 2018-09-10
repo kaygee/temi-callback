@@ -1,10 +1,6 @@
 package callback.beans;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.springframework.lang.NonNull;
-
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 
 public enum JobStatus {
   @JsonProperty("failed")
