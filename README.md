@@ -17,7 +17,16 @@ I use an in-memory database to keep track of all the callback requests I get.
 - `java -jar ./target/temi-callback-mock-0.1.0.jar`
 
 ## Methods
+### Management related
 - `/jobs` - Return all the jobs that have been received.
 - `/jobs/job/{id}` - Return the job(s) that have the corresponding jobId.
 - `/jobs/status/{status}` - Return the job(s) that have the corresponding status.
- 
+### Callback related
+These all assume that the payload complies with https://api.temi.com/api/reference/v1 or https://rev.ai.
+
+All paths return the HTTP status code of the name of the path. For example ``/successful` returns HTTP 200.
+- `/successful`
+- `/bad-request`
+- `/unauthorized`
+- `/internal-server-error`
+- `/gone`
