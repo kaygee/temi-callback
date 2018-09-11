@@ -6,6 +6,7 @@ import callback.beans.JobStatus;
 import callback.exception.JobNotFoundException;
 import callback.repository.JobRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,14 +62,13 @@ public class CallbackController {
       method = {GET, POST})
   @ResponseBody
   public ResponseEntity<Object> respondSuccessful(@RequestBody String request) {
-    LOG.info(request);
-    JobCallback jobCallback = null;
+    LOG.info("respondSuccessful " + request);
     try {
-      jobCallback = new ObjectMapper().readValue(request, JobCallback.class);
+      JobCallback jobCallback = new ObjectMapper().readValue(request, JobCallback.class);
+      jobRepository.save(jobCallback.getJob());
     } catch (IOException e) {
       e.printStackTrace();
     }
-    jobRepository.save(jobCallback.getJob());
     return ResponseEntity.status(HttpStatus.OK).body(null);
   }
 
@@ -77,10 +77,10 @@ public class CallbackController {
       method = {GET, POST})
   @ResponseBody
   public ResponseEntity<Object> respondOk(@RequestBody String request) {
-    LOG.info(request);
-    JobCallback jobCallback = null;
+    LOG.info("respondOk " + request);
     try {
-      jobCallback = new ObjectMapper().readValue(request, JobCallback.class);
+      Job job = new ObjectMapper().readValue(request, Job.class);
+      jobRepository.save(job);
     } catch (IOException e) {
       e.printStackTrace();
     }
@@ -93,9 +93,9 @@ public class CallbackController {
   @ResponseBody
   public ResponseEntity<Object> respondBadRequest(@RequestBody String request) {
     LOG.info(request);
-    JobCallback jobCallback = null;
     try {
-      jobCallback = new ObjectMapper().readValue(request, JobCallback.class);
+      JobCallback jobCallback = new ObjectMapper().readValue(request, JobCallback.class);
+      jobRepository.save(jobCallback.getJob());
     } catch (IOException e) {
       e.printStackTrace();
     }
@@ -108,9 +108,9 @@ public class CallbackController {
   @ResponseBody
   public ResponseEntity<Object> respondUnauthorized(@RequestBody String request) {
     LOG.info(request);
-    JobCallback jobCallback = null;
     try {
-      jobCallback = new ObjectMapper().readValue(request, JobCallback.class);
+      JobCallback jobCallback = new ObjectMapper().readValue(request, JobCallback.class);
+      jobRepository.save(jobCallback.getJob());
     } catch (IOException e) {
       e.printStackTrace();
     }
@@ -123,9 +123,9 @@ public class CallbackController {
   @ResponseBody
   public ResponseEntity<Object> respondInternalServerError(@Valid @RequestBody String request) {
     LOG.info(request);
-    JobCallback jobCallback = null;
     try {
-      jobCallback = new ObjectMapper().readValue(request, JobCallback.class);
+      JobCallback jobCallback = new ObjectMapper().readValue(request, JobCallback.class);
+      jobRepository.save(jobCallback.getJob());
     } catch (IOException e) {
       e.printStackTrace();
     }
@@ -138,9 +138,9 @@ public class CallbackController {
   @ResponseBody
   public ResponseEntity<Object> respondGone(@RequestBody String request) {
     LOG.info(request);
-    JobCallback jobCallback = null;
     try {
-      jobCallback = new ObjectMapper().readValue(request, JobCallback.class);
+      JobCallback jobCallback = new ObjectMapper().readValue(request, JobCallback.class);
+      jobRepository.save(jobCallback.getJob());
     } catch (IOException e) {
       e.printStackTrace();
     }
