@@ -189,7 +189,9 @@ public class Job {
   @Override
   public String toString() {
     return "Job{"
-        + "id='"
+        + "databaseId="
+        + databaseId
+        + ", id='"
         + id
         + '\''
         + ", status="
@@ -200,13 +202,14 @@ public class Job {
         + ", failureDetail='"
         + failureDetail
         + '\''
-        + ", createdOn="
-        + createdOn
         + ", webUrl='"
         + webUrl
         + '\''
         + ", durationSeconds="
         + durationSeconds
+        + ", mediaUrl='"
+        + mediaUrl
+        + '\''
         + ", name='"
         + name
         + '\''
@@ -216,9 +219,14 @@ public class Job {
         + ", metadata='"
         + metadata
         + '\''
+        + ", createdOn='"
+        + createdOn
+        + '\''
         + ", lastModifiedOn='"
         + lastModifiedOn
         + '\''
+        + ", receivedAt="
+        + receivedAt
         + '}';
   }
 
@@ -227,33 +235,38 @@ public class Job {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     Job job = (Job) o;
-    return Objects.equals(id, job.id)
+    return Objects.equals(databaseId, job.databaseId)
+        && Objects.equals(id, job.id)
         && status == job.status
         && Objects.equals(failure, job.failure)
         && Objects.equals(failureDetail, job.failureDetail)
-        && Objects.equals(createdOn, job.createdOn)
         && Objects.equals(webUrl, job.webUrl)
         && Objects.equals(durationSeconds, job.durationSeconds)
+        && Objects.equals(mediaUrl, job.mediaUrl)
         && Objects.equals(name, job.name)
         && Objects.equals(callbackUrl, job.callbackUrl)
         && Objects.equals(metadata, job.metadata)
-        && Objects.equals(lastModifiedOn, job.lastModifiedOn);
+        && Objects.equals(createdOn, job.createdOn)
+        && Objects.equals(lastModifiedOn, job.lastModifiedOn)
+        && Objects.equals(receivedAt, job.receivedAt);
   }
 
   @Override
   public int hashCode() {
-
     return Objects.hash(
+        databaseId,
         id,
         status,
         failure,
         failureDetail,
-        createdOn,
         webUrl,
         durationSeconds,
+        mediaUrl,
         name,
         callbackUrl,
         metadata,
-        lastModifiedOn);
+        createdOn,
+        lastModifiedOn,
+        receivedAt);
   }
 }
