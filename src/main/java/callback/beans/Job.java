@@ -44,7 +44,6 @@ public class Job {
   @JsonProperty("failure_detail")
   private String failureDetail;
 
-  @NotBlank
   @Column(name = "web_url")
   @JsonProperty("web_url")
   private String webUrl;
