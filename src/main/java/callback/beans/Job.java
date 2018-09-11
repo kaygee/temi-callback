@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.lang.NonNull;
+import org.springframework.lang.Nullable;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -52,6 +53,10 @@ public class Job {
   @JsonProperty("duration_seconds")
   private Long durationSeconds;
 
+  @Column(name = "media_url")
+  @JsonProperty("media_url")
+  private String mediaUrl;
+
   @Column(name = "name")
   @JsonProperty("name")
   private String name;
@@ -60,7 +65,7 @@ public class Job {
   @JsonProperty("callback_url")
   private String callbackUrl;
 
-  @Column(name = "metadata",length = 2048)
+  @Column(name = "metadata", length = 2048)
   @JsonProperty("metadata")
   private String metadata;
 
@@ -76,6 +81,14 @@ public class Job {
   @LastModifiedDate
   @Temporal(TemporalType.TIMESTAMP)
   private Date receivedAt;
+
+  public String getMediaUrl() {
+    return mediaUrl;
+  }
+
+  public void setMediaUrl(String mediaUrl) {
+    this.mediaUrl = mediaUrl;
+  }
 
   public Date getReceivedAt() {
     return receivedAt;
