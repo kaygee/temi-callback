@@ -6,7 +6,6 @@ import callback.beans.JobStatus;
 import callback.exception.JobNotFoundException;
 import callback.repository.JobRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +32,11 @@ public class CallbackController {
   private static final Logger LOG = LoggerFactory.getLogger(CallbackController.class);
 
   @Autowired JobRepository jobRepository;
+
+  @GetMapping("/jobs/count")
+  public Integer getJobsCount() {
+    return jobRepository.countJobs();
+  }
 
   @GetMapping("/jobs")
   public List<Job> getAllJobs() {

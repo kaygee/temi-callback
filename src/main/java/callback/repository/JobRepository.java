@@ -15,7 +15,10 @@ public interface JobRepository extends JpaRepository<Job, Long> {
   @Query("FROM Job WHERE id = :jobId")
   List<Job> findByJobId(String jobId);
 
-  // This is HQL NOT SQL.
   @Query("FROM Job WHERE status = :status")
   List<Job> findByJobStatus(JobStatus status);
+
+  @Query("SELECT COUNT(id) FROM Job")
+  Integer countJobs();
+
 }
