@@ -26,6 +26,9 @@ public class Job {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long databaseId;
 
+  @Column(name = "job_type")
+  private String jobType;
+
   @NotBlank
   @Column(name = "id")
   @JsonProperty("id")
@@ -81,6 +84,14 @@ public class Job {
   @LastModifiedDate
   @Temporal(TemporalType.TIMESTAMP)
   private Date receivedAt;
+
+  public String getJobType() {
+    return jobType;
+  }
+
+  public void setJobType(String jobType) {
+    this.jobType = jobType;
+  }
 
   public String getMediaUrl() {
     return mediaUrl;

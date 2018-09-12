@@ -2,6 +2,7 @@ package callback.repository;
 
 import callback.beans.Job;
 import callback.beans.JobStatus;
+import callback.beans.JobType;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -20,5 +21,8 @@ public interface JobRepository extends JpaRepository<Job, Long> {
 
   @Query("SELECT COUNT(id) FROM Job")
   Integer countJobs();
+
+  @Query("FROM Job WHERE job_type = :jobType")
+  List<Job> findByJobType(String jobType);
 
 }

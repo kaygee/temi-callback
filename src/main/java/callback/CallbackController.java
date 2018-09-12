@@ -3,6 +3,7 @@ package callback;
 import callback.beans.Job;
 import callback.beans.JobCallback;
 import callback.beans.JobStatus;
+import callback.beans.JobType;
 import callback.exception.JobNotFoundException;
 import callback.repository.JobRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -39,11 +41,15 @@ public class CallbackController {
   }
 
   @GetMapping("/jobs")
-  public List<Job> getAllJobs() {
-    return jobRepository.findAll();
+  public List<Job> getJobs(@RequestParam(value = "type", required = false) String jobType) {
+    if (jobType != null) {
+      return jobRepository.findByJobType(jobType);
+    } else {
+      return jobRepository.findAll();
+    }
   }
 
-  @PostMapping("/jobs/job/{id}")
+  @PostMapping("/jobs/{id}")
   public List<Job> getJobById(@PathVariable(value = "id") String id) {
     try {
       return jobRepository.findByJobId(id);
@@ -52,7 +58,7 @@ public class CallbackController {
     }
   }
 
-  @PostMapping("/jobs/status/{status}")
+  @PostMapping("/jobs/{status}/status")
   public List<Job> getJobByStatus(@PathVariable(value = "status") String jobStatus) {
     try {
       return jobRepository.findByJobStatus(JobStatus.valueOf(jobStatus.toUpperCase()));
@@ -66,9 +72,10 @@ public class CallbackController {
       method = {GET, POST})
   @ResponseBody
   public ResponseEntity<Object> respondSuccessful(@RequestBody String request) {
-    LOG.info("respondSuccessful " + request);
+    LOG.info(request);
     try {
       JobCallback jobCallback = new ObjectMapper().readValue(request, JobCallback.class);
+      jobCallback.getJob().setJobType(JobType.TEMI.toString());
       jobRepository.save(jobCallback.getJob());
     } catch (IOException e) {
       e.printStackTrace();
@@ -81,9 +88,10 @@ public class CallbackController {
       method = {GET, POST})
   @ResponseBody
   public ResponseEntity<Object> respondOk(@RequestBody String request) {
-    LOG.info("respondOk " + request);
+    LOG.info(request);
     try {
       Job job = new ObjectMapper().readValue(request, Job.class);
+      job.setJobType(JobType.REVAI.toString());
       jobRepository.save(job);
     } catch (IOException e) {
       e.printStackTrace();
@@ -99,6 +107,7 @@ public class CallbackController {
     LOG.info(request);
     try {
       JobCallback jobCallback = new ObjectMapper().readValue(request, JobCallback.class);
+      jobCallback.getJob().setJobType(JobType.TEMI.toString());
       jobRepository.save(jobCallback.getJob());
     } catch (IOException e) {
       e.printStackTrace();
@@ -114,6 +123,7 @@ public class CallbackController {
     LOG.info(request);
     try {
       JobCallback jobCallback = new ObjectMapper().readValue(request, JobCallback.class);
+      jobCallback.getJob().setJobType(JobType.TEMI.toString());
       jobRepository.save(jobCallback.getJob());
     } catch (IOException e) {
       e.printStackTrace();
@@ -129,6 +139,7 @@ public class CallbackController {
     LOG.info(request);
     try {
       JobCallback jobCallback = new ObjectMapper().readValue(request, JobCallback.class);
+      jobCallback.getJob().setJobType(JobType.TEMI.toString());
       jobRepository.save(jobCallback.getJob());
     } catch (IOException e) {
       e.printStackTrace();
@@ -144,6 +155,7 @@ public class CallbackController {
     LOG.info(request);
     try {
       JobCallback jobCallback = new ObjectMapper().readValue(request, JobCallback.class);
+      jobCallback.getJob().setJobType(JobType.TEMI.toString());
       jobRepository.save(jobCallback.getJob());
     } catch (IOException e) {
       e.printStackTrace();
