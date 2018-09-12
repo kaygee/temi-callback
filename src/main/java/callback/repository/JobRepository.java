@@ -25,4 +25,6 @@ public interface JobRepository extends JpaRepository<Job, Long> {
   @Query("FROM Job WHERE job_type = :jobType")
   List<Job> findByJobType(String jobType);
 
+  @Query("FROM Job WHERE job_type = :jobType AND status = :status")
+  List<Job> findByJobTypeAndStatus(String jobType, JobStatus status);
 }

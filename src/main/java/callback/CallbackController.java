@@ -41,8 +41,15 @@ public class CallbackController {
   }
 
   @GetMapping("/jobs")
-  public List<Job> getJobs(@RequestParam(value = "type", required = false) String jobType) {
-    if (jobType != null) {
+  public List<Job> getJobs(
+      @RequestParam(value = "type", required = false) String jobType,
+      @RequestParam(value = "status", required = false) String jobStatus) {
+    if (jobType != null && jobStatus != null) {
+      return jobRepository.findByJobTypeAndStatus(
+          jobType, JobStatus.valueOf(jobStatus.toUpperCase()));
+    } else if (jobType == null && jobStatus != null) {
+      return jobRepository.findByJobStatus(JobStatus.valueOf(jobStatus.toUpperCase()));
+    } else if (jobType != null && jobStatus == null) {
       return jobRepository.findByJobType(jobType);
     } else {
       return jobRepository.findAll();
