@@ -33,4 +33,11 @@ All paths return the HTTP status code of the name of the path. For example ``/su
 
 ### Parameters
 ### Management related
-- `/jobs` - has a parameter called `type` which can have the value of the type of job. Check the JobType enum.
+- `/jobs` - has two optional parameters.
+    - `type` which is the type of job.
+    - `status` which is the staus of the job.
+
+## Examples
+- http://localhost:8080/jobs?type=revai&status=transcribed
+- http://localhost:8080/jobs?type=temi
+- http://localhost:8080/jobs?status=failed
