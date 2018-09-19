@@ -4,6 +4,14 @@ I'm a callback mock service for https://www.temi.com/api. It'll start up and lis
 
 I use an in-memory database to keep track of all the callback requests I get.
 
+## Technology
+- Spring Boot (https://spring.io/projects/spring-boot)
+- H2 (http://www.h2database.com/html/main.html)
+- Rest (https://en.wikipedia.org/wiki/Representational_state_transfer)
+- Spring JPA (https://projects.spring.io/spring-data-jpa/)
+- Temi API (https://www.temi.com/api)
+- Rev.ai API (https://www.rev.ai/)
+
 ## Assumptions
 - Installed homebrew (http://brew.sh/).
 
