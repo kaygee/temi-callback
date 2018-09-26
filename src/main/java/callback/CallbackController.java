@@ -4,6 +4,7 @@ import callback.beans.Job;
 import callback.beans.JobCallback;
 import callback.beans.JobStatus;
 import callback.beans.JobType;
+import callback.beans.OrderStatusInfo;
 import callback.exception.JobNotFoundException;
 import callback.repository.JobRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -14,7 +15,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -106,9 +106,9 @@ public class CallbackController {
   public ResponseEntity<Object> respondOkRevApi(@RequestBody String request) {
     LOG.info(request);
     try {
-      Job job = new ObjectMapper().readValue(request, Job.class);
-      job.setJobType(JobType.REVAPI);
-      jobRepository.save(job);
+      OrderStatusInfo job = new ObjectMapper().readValue(request, OrderStatusInfo.class);
+      job.getJob().setJobType(JobType.REVAPI);
+      jobRepository.save(job.getJob());
     } catch (IOException e) {
       e.printStackTrace();
     }

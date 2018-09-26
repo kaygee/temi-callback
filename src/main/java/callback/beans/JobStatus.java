@@ -3,18 +3,23 @@ package callback.beans;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public enum JobStatus {
-  @JsonProperty("cancelled")
-  CANCELLED("cancelled"),
+  // Rev API
+  @JsonProperty("Cancelled")
+  CANCELLED("Cancelled"),
 
-  @JsonProperty("delivered")
-  DELIVERED("delivered"),
+  // Rev API
+  @JsonProperty("Complete")
+  COMPLETE("Complete"),
 
+  // Temi API and Rev.ai
   @JsonProperty("failed")
   FAILED("failed"),
 
+  // Temi API and Rev.ai
   @JsonProperty("transcribed")
   TRANSCRIBED("transcribed"),
 
+  // Temi API and Rev.ai
   @JsonProperty("inProgress")
   INPROGRESS("inProgress");
 
