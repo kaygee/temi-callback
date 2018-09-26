@@ -6,9 +6,18 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.lang.NonNull;
-import org.springframework.lang.Nullable;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.validation.constraints.NotBlank;
 import java.util.Date;
 import java.util.Objects;
@@ -26,13 +35,27 @@ public class Job {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long databaseId;
 
-  @Column(name = "job_type")
-  private String jobType;
 
-  @NotBlank
+  @Column(name = "order_number")
+  @JsonProperty("order_number")
+  private String orderNumber;
+
+  @Column(name = "client_ref")
+  @JsonProperty("client_ref")
+  private String clientReference;
+
+  @Column(name = "comment")
+  @JsonProperty("comment")
+  private String comment;
+
   @Column(name = "id")
   @JsonProperty("id")
   private String id;
+
+  @NonNull
+  @Enumerated(EnumType.STRING)
+  @Column(name = "job_type")
+  private JobType jobType;
 
   @NonNull
   @Enumerated(EnumType.STRING)
@@ -85,11 +108,11 @@ public class Job {
   @Temporal(TemporalType.TIMESTAMP)
   private Date receivedAt;
 
-  public String getJobType() {
+  public JobType getJobType() {
     return jobType;
   }
 
-  public void setJobType(String jobType) {
+  public void setJobType(JobType jobType) {
     this.jobType = jobType;
   }
 
@@ -197,11 +220,55 @@ public class Job {
     this.lastModifiedOn = lastModifiedOn;
   }
 
+  public Long getDatabaseId() {
+    return databaseId;
+  }
+
+  public void setDatabaseId(Long databaseId) {
+    this.databaseId = databaseId;
+  }
+
+  public String getOrderNumber() {
+    return orderNumber;
+  }
+
+  public void setOrderNumber(String orderNumber) {
+    this.orderNumber = orderNumber;
+  }
+
+  public String getClientReference() {
+    return clientReference;
+  }
+
+  public void setClientReference(String clientReference) {
+    this.clientReference = clientReference;
+  }
+
+  public String getComment() {
+    return comment;
+  }
+
+  public void setComment(String comment) {
+    this.comment = comment;
+  }
+
   @Override
   public String toString() {
     return "Job{"
         + "databaseId="
         + databaseId
+        + ", jobType='"
+        + jobType
+        + '\''
+        + ", orderNumber='"
+        + orderNumber
+        + '\''
+        + ", clientReference='"
+        + clientReference
+        + '\''
+        + ", comment='"
+        + comment
+        + '\''
         + ", id='"
         + id
         + '\''
@@ -247,6 +314,10 @@ public class Job {
     if (o == null || getClass() != o.getClass()) return false;
     Job job = (Job) o;
     return Objects.equals(databaseId, job.databaseId)
+        && Objects.equals(jobType, job.jobType)
+        && Objects.equals(orderNumber, job.orderNumber)
+        && Objects.equals(clientReference, job.clientReference)
+        && Objects.equals(comment, job.comment)
         && Objects.equals(id, job.id)
         && status == job.status
         && Objects.equals(failure, job.failure)
@@ -266,6 +337,10 @@ public class Job {
   public int hashCode() {
     return Objects.hash(
         databaseId,
+        jobType,
+        orderNumber,
+        clientReference,
+        comment,
         id,
         status,
         failure,

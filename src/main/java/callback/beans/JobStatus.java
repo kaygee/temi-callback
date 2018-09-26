@@ -3,6 +3,12 @@ package callback.beans;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public enum JobStatus {
+  @JsonProperty("cancelled")
+  CANCELLED("cancelled"),
+
+  @JsonProperty("delivered")
+  DELIVERED("delivered"),
+
   @JsonProperty("failed")
   FAILED("failed"),
 

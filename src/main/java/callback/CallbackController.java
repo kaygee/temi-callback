@@ -50,7 +50,7 @@ public class CallbackController {
     } else if (jobType == null && jobStatus != null) {
       return jobRepository.findByJobStatus(JobStatus.valueOf(jobStatus.toUpperCase()));
     } else if (jobType != null && jobStatus == null) {
-      return jobRepository.findByJobType(jobType);
+      return jobRepository.findByJobType(JobType.valueOf(jobType.toUpperCase()));
     } else {
       return jobRepository.findAll();
     }
@@ -82,7 +82,7 @@ public class CallbackController {
     LOG.info(request);
     try {
       JobCallback jobCallback = new ObjectMapper().readValue(request, JobCallback.class);
-      jobCallback.getJob().setJobType(JobType.TEMI.toString());
+      jobCallback.getJob().setJobType(JobType.TEMI);
       jobRepository.save(jobCallback.getJob());
     } catch (IOException e) {
       e.printStackTrace();
@@ -91,14 +91,14 @@ public class CallbackController {
   }
 
   @RequestMapping(
-      value = "/successful-rev-ai",
+      value = "/successful-rev-api",
       method = {GET, POST})
   @ResponseBody
-  public ResponseEntity<Object> respondOk(@RequestBody String request) {
+  public ResponseEntity<Object> respondOkRevApi(@RequestBody String request) {
     LOG.info(request);
     try {
       Job job = new ObjectMapper().readValue(request, Job.class);
-      job.setJobType(JobType.REVAI.toString());
+      job.setJobType(JobType.REVAPI);
       jobRepository.save(job);
     } catch (IOException e) {
       e.printStackTrace();
@@ -114,7 +114,7 @@ public class CallbackController {
     LOG.info(request);
     try {
       JobCallback jobCallback = new ObjectMapper().readValue(request, JobCallback.class);
-      jobCallback.getJob().setJobType(JobType.TEMI.toString());
+      jobCallback.getJob().setJobType(JobType.TEMI);
       jobRepository.save(jobCallback.getJob());
     } catch (IOException e) {
       e.printStackTrace();
@@ -130,7 +130,7 @@ public class CallbackController {
     LOG.info(request);
     try {
       JobCallback jobCallback = new ObjectMapper().readValue(request, JobCallback.class);
-      jobCallback.getJob().setJobType(JobType.TEMI.toString());
+      jobCallback.getJob().setJobType(JobType.TEMI);
       jobRepository.save(jobCallback.getJob());
     } catch (IOException e) {
       e.printStackTrace();
@@ -146,7 +146,7 @@ public class CallbackController {
     LOG.info(request);
     try {
       JobCallback jobCallback = new ObjectMapper().readValue(request, JobCallback.class);
-      jobCallback.getJob().setJobType(JobType.TEMI.toString());
+      jobCallback.getJob().setJobType(JobType.TEMI);
       jobRepository.save(jobCallback.getJob());
     } catch (IOException e) {
       e.printStackTrace();
@@ -162,7 +162,7 @@ public class CallbackController {
     LOG.info(request);
     try {
       JobCallback jobCallback = new ObjectMapper().readValue(request, JobCallback.class);
-      jobCallback.getJob().setJobType(JobType.TEMI.toString());
+      jobCallback.getJob().setJobType(JobType.TEMI);
       jobRepository.save(jobCallback.getJob());
     } catch (IOException e) {
       e.printStackTrace();

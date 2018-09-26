@@ -3,6 +3,9 @@ package callback.beans;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public enum JobType {
+  @JsonProperty("revapi")
+  REVAPI("revapi"),
+
   @JsonProperty("revai")
   REVAI("revai"),
 
