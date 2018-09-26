@@ -56,7 +56,7 @@ public class CallbackController {
     }
   }
 
-  @PostMapping("/jobs/{id}")
+  @GetMapping("/jobs/{id}/job-id")
   public List<Job> getJobById(@PathVariable(value = "id") String id) {
     try {
       return jobRepository.findByJobId(id);
@@ -65,7 +65,16 @@ public class CallbackController {
     }
   }
 
-  @PostMapping("/jobs/{status}/status")
+  @GetMapping("/jobs/{orderNumber}/order-number")
+  public List<Job> getJobByOrderNumber(@PathVariable(value = "orderNumber") String orderNumber) {
+    try {
+      return jobRepository.findByOrderNumber(orderNumber);
+    } catch (IllegalArgumentException e) {
+      throw new JobNotFoundException("Job ID", orderNumber);
+    }
+  }
+
+  @GetMapping("/jobs/{status}/status")
   public List<Job> getJobByStatus(@PathVariable(value = "status") String jobStatus) {
     try {
       return jobRepository.findByJobStatus(JobStatus.valueOf(jobStatus.toUpperCase()));
