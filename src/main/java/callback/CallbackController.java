@@ -100,6 +100,22 @@ public class CallbackController {
   }
 
   @RequestMapping(
+      value = "/successful-rev-ai",
+      method = {GET, POST})
+  @ResponseBody
+  public ResponseEntity<Object> respondOkRevAi(@RequestBody String request) {
+    LOG.info(request);
+    try {
+      OrderStatusInfo job = new ObjectMapper().readValue(request, OrderStatusInfo.class);
+      job.getJob().setJobType(JobType.REVAI);
+      jobRepository.save(job.getJob());
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    return ResponseEntity.status(HttpStatus.OK).body(null);
+  }
+
+  @RequestMapping(
       value = "/successful-rev-api",
       method = {GET, POST})
   @ResponseBody
