@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import org.springframework.http.HttpStatus;
 import org.springframework.lang.NonNull;
 
 import javax.persistence.Column;
@@ -34,6 +35,12 @@ public class Job {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long databaseId;
 
+  @Column(name = "raw_data", length = 4096)
+  private String rawData;
+
+  @Column(name = "http_status")
+  private HttpStatus httpStatus;
+
   @Column(name = "order_number")
   @JsonProperty("order_number")
   private String orderNumber;
@@ -50,7 +57,6 @@ public class Job {
   @JsonProperty("id")
   private String id;
 
-  @NonNull
   @Enumerated(EnumType.STRING)
   @Column(name = "job_type")
   private JobType jobType;
@@ -106,12 +112,28 @@ public class Job {
   @Temporal(TemporalType.TIMESTAMP)
   private Date receivedAt;
 
-  public JobType getJobType() {
-    return jobType;
+  public HttpStatus getHttpStatus() {
+    return httpStatus;
+  }
+
+  public void setHttpStatus(HttpStatus httpStatus) {
+    this.httpStatus = httpStatus;
+  }
+
+  public String getRawData() {
+    return rawData;
+  }
+
+  public void setRawData(String rawData) {
+    this.rawData = rawData;
   }
 
   public void setJobType(JobType jobType) {
     this.jobType = jobType;
+  }
+
+  public JobType getJobType() {
+    return jobType;
   }
 
   public String getMediaUrl() {
@@ -255,9 +277,11 @@ public class Job {
     return "Job{"
         + "databaseId="
         + databaseId
-        + ", jobType='"
-        + jobType
+        + ", rawData='"
+        + rawData
         + '\''
+        + ", httpStatus="
+        + httpStatus
         + ", orderNumber='"
         + orderNumber
         + '\''
@@ -270,6 +294,8 @@ public class Job {
         + ", id='"
         + id
         + '\''
+        + ", jobType="
+        + jobType
         + ", status="
         + status
         + ", failure='"
@@ -312,11 +338,13 @@ public class Job {
     if (o == null || getClass() != o.getClass()) return false;
     Job job = (Job) o;
     return Objects.equals(databaseId, job.databaseId)
-        && Objects.equals(jobType, job.jobType)
+        && Objects.equals(rawData, job.rawData)
+        && httpStatus == job.httpStatus
         && Objects.equals(orderNumber, job.orderNumber)
         && Objects.equals(clientReference, job.clientReference)
         && Objects.equals(comment, job.comment)
         && Objects.equals(id, job.id)
+        && jobType == job.jobType
         && status == job.status
         && Objects.equals(failure, job.failure)
         && Objects.equals(failureDetail, job.failureDetail)
@@ -335,11 +363,13 @@ public class Job {
   public int hashCode() {
     return Objects.hash(
         databaseId,
-        jobType,
+        rawData,
+        httpStatus,
         orderNumber,
         clientReference,
         comment,
         id,
+        jobType,
         status,
         failure,
         failureDetail,

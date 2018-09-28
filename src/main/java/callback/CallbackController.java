@@ -90,9 +90,10 @@ public class CallbackController {
   public ResponseEntity<Object> respondSuccessful(@RequestBody String request) {
     LOG.info(request);
     try {
-      JobCallback jobCallback = new ObjectMapper().readValue(request, JobCallback.class);
-      jobCallback.getJob().setJobType(JobType.TEMI);
-      jobRepository.save(jobCallback.getJob());
+      JobCallback job = new ObjectMapper().readValue(request, JobCallback.class);
+      job.getJob().setHttpStatus(HttpStatus.OK);
+      job.getJob().setRawData(request);
+      jobRepository.save(job.getJob());
     } catch (IOException e) {
       e.printStackTrace();
     }
@@ -107,6 +108,8 @@ public class CallbackController {
     LOG.info(request);
     try {
       JobCallback job = new ObjectMapper().readValue(request, JobCallback.class);
+      job.getJob().setRawData(request);
+      job.getJob().setHttpStatus(HttpStatus.OK);
       job.getJob().setJobType(JobType.REVAI);
       jobRepository.save(job.getJob());
     } catch (IOException e) {
@@ -123,6 +126,8 @@ public class CallbackController {
     LOG.info(request);
     try {
       OrderStatusInfo job = new ObjectMapper().readValue(request, OrderStatusInfo.class);
+      job.getJob().setRawData(request);
+      job.getJob().setHttpStatus(HttpStatus.OK);
       job.getJob().setJobType(JobType.REVAPI);
       jobRepository.save(job.getJob());
     } catch (IOException e) {
@@ -138,9 +143,10 @@ public class CallbackController {
   public ResponseEntity<Object> respondBadRequest(@RequestBody String request) {
     LOG.info(request);
     try {
-      JobCallback jobCallback = new ObjectMapper().readValue(request, JobCallback.class);
-      jobCallback.getJob().setJobType(JobType.TEMI);
-      jobRepository.save(jobCallback.getJob());
+      JobCallback job = new ObjectMapper().readValue(request, JobCallback.class);
+      job.getJob().setRawData(request);
+      job.getJob().setHttpStatus(HttpStatus.BAD_REQUEST);
+      jobRepository.save(job.getJob());
     } catch (IOException e) {
       e.printStackTrace();
     }
@@ -154,9 +160,10 @@ public class CallbackController {
   public ResponseEntity<Object> respondUnauthorized(@RequestBody String request) {
     LOG.info(request);
     try {
-      JobCallback jobCallback = new ObjectMapper().readValue(request, JobCallback.class);
-      jobCallback.getJob().setJobType(JobType.TEMI);
-      jobRepository.save(jobCallback.getJob());
+      JobCallback job = new ObjectMapper().readValue(request, JobCallback.class);
+      job.getJob().setRawData(request);
+      job.getJob().setHttpStatus(HttpStatus.UNAUTHORIZED);
+      jobRepository.save(job.getJob());
     } catch (IOException e) {
       e.printStackTrace();
     }
@@ -170,9 +177,10 @@ public class CallbackController {
   public ResponseEntity<Object> respondInternalServerError(@Valid @RequestBody String request) {
     LOG.info(request);
     try {
-      JobCallback jobCallback = new ObjectMapper().readValue(request, JobCallback.class);
-      jobCallback.getJob().setJobType(JobType.TEMI);
-      jobRepository.save(jobCallback.getJob());
+      JobCallback job = new ObjectMapper().readValue(request, JobCallback.class);
+      job.getJob().setRawData(request);
+      job.getJob().setHttpStatus(HttpStatus.INTERNAL_SERVER_ERROR);
+      jobRepository.save(job.getJob());
     } catch (IOException e) {
       e.printStackTrace();
     }
@@ -186,9 +194,10 @@ public class CallbackController {
   public ResponseEntity<Object> respondGone(@RequestBody String request) {
     LOG.info(request);
     try {
-      JobCallback jobCallback = new ObjectMapper().readValue(request, JobCallback.class);
-      jobCallback.getJob().setJobType(JobType.TEMI);
-      jobRepository.save(jobCallback.getJob());
+      JobCallback job = new ObjectMapper().readValue(request, JobCallback.class);
+      job.getJob().setRawData(request);
+      job.getJob().setHttpStatus(HttpStatus.GONE);
+      jobRepository.save(job.getJob());
     } catch (IOException e) {
       e.printStackTrace();
     }
