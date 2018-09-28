@@ -106,7 +106,7 @@ public class CallbackController {
   public ResponseEntity<Object> respondOkRevAi(@RequestBody String request) {
     LOG.info(request);
     try {
-      OrderStatusInfo job = new ObjectMapper().readValue(request, OrderStatusInfo.class);
+      JobCallback job = new ObjectMapper().readValue(request, JobCallback.class);
       job.getJob().setJobType(JobType.REVAI);
       jobRepository.save(job.getJob());
     } catch (IOException e) {
