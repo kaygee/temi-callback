@@ -107,6 +107,9 @@ public class Job {
   @JsonProperty("last_modified_on")
   private String lastModifiedOn;
 
+  @JsonProperty("completed_on")
+  private String completedOn;
+
   @Column(name = "received_at", nullable = false)
   @LastModifiedDate
   @Temporal(TemporalType.TIMESTAMP)
@@ -272,6 +275,68 @@ public class Job {
     this.comment = comment;
   }
 
+  public String getCompletedOn() {
+    return completedOn;
+  }
+
+  public void setCompletedOn(String completedOn) {
+    this.completedOn = completedOn;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    Job job = (Job) o;
+    return Objects.equals(databaseId, job.databaseId)
+        && Objects.equals(rawData, job.rawData)
+        && httpStatus == job.httpStatus
+        && Objects.equals(orderNumber, job.orderNumber)
+        && Objects.equals(clientReference, job.clientReference)
+        && Objects.equals(comment, job.comment)
+        && Objects.equals(id, job.id)
+        && jobType == job.jobType
+        && status == job.status
+        && Objects.equals(failure, job.failure)
+        && Objects.equals(failureDetail, job.failureDetail)
+        && Objects.equals(webUrl, job.webUrl)
+        && Objects.equals(durationSeconds, job.durationSeconds)
+        && Objects.equals(mediaUrl, job.mediaUrl)
+        && Objects.equals(name, job.name)
+        && Objects.equals(callbackUrl, job.callbackUrl)
+        && Objects.equals(metadata, job.metadata)
+        && Objects.equals(createdOn, job.createdOn)
+        && Objects.equals(lastModifiedOn, job.lastModifiedOn)
+        && Objects.equals(completedOn, job.completedOn)
+        && Objects.equals(receivedAt, job.receivedAt);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(
+        databaseId,
+        rawData,
+        httpStatus,
+        orderNumber,
+        clientReference,
+        comment,
+        id,
+        jobType,
+        status,
+        failure,
+        failureDetail,
+        webUrl,
+        durationSeconds,
+        mediaUrl,
+        name,
+        callbackUrl,
+        metadata,
+        createdOn,
+        lastModifiedOn,
+        completedOn,
+        receivedAt);
+  }
+
   @Override
   public String toString() {
     return "Job{"
@@ -327,60 +392,11 @@ public class Job {
         + ", lastModifiedOn='"
         + lastModifiedOn
         + '\''
+        + ", completedOn='"
+        + completedOn
+        + '\''
         + ", receivedAt="
         + receivedAt
         + '}';
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
-    Job job = (Job) o;
-    return Objects.equals(databaseId, job.databaseId)
-        && Objects.equals(rawData, job.rawData)
-        && httpStatus == job.httpStatus
-        && Objects.equals(orderNumber, job.orderNumber)
-        && Objects.equals(clientReference, job.clientReference)
-        && Objects.equals(comment, job.comment)
-        && Objects.equals(id, job.id)
-        && jobType == job.jobType
-        && status == job.status
-        && Objects.equals(failure, job.failure)
-        && Objects.equals(failureDetail, job.failureDetail)
-        && Objects.equals(webUrl, job.webUrl)
-        && Objects.equals(durationSeconds, job.durationSeconds)
-        && Objects.equals(mediaUrl, job.mediaUrl)
-        && Objects.equals(name, job.name)
-        && Objects.equals(callbackUrl, job.callbackUrl)
-        && Objects.equals(metadata, job.metadata)
-        && Objects.equals(createdOn, job.createdOn)
-        && Objects.equals(lastModifiedOn, job.lastModifiedOn)
-        && Objects.equals(receivedAt, job.receivedAt);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(
-        databaseId,
-        rawData,
-        httpStatus,
-        orderNumber,
-        clientReference,
-        comment,
-        id,
-        jobType,
-        status,
-        failure,
-        failureDetail,
-        webUrl,
-        durationSeconds,
-        mediaUrl,
-        name,
-        callbackUrl,
-        metadata,
-        createdOn,
-        lastModifiedOn,
-        receivedAt);
   }
 }
