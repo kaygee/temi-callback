@@ -54,32 +54,33 @@ public class CallbackController {
     return jobRepository.findByJobType(JobType.TRANSCRIPTION.toString());
   }
 
-  @GetMapping("/jobs/{id}/job-id")
-  public List<Job> getJobById(@PathVariable(value = "id") String id) {
-    try {
-      return jobRepository.findByJobId(id);
-    } catch (IllegalArgumentException e) {
-      throw new JobNotFoundException("Job ID", id);
-    }
-  }
+  //  @GetMapping("/jobs/{id}/job-id")
+  //  public List<Job> getJobById(@PathVariable(value = "id") String id) {
+  //    try {
+  //      return jobRepository.findByJobId(id);
+  //    } catch (IllegalArgumentException e) {
+  //      throw new JobNotFoundException("Job ID", id);
+  //    }
+  //  }
 
-  @GetMapping("/jobs/{orderNumber}/order-number")
-  public List<Job> getJobByOrderNumber(@PathVariable(value = "orderNumber") String orderNumber) {
-    try {
-      return jobRepository.findByOrderNumber(orderNumber);
-    } catch (IllegalArgumentException e) {
-      throw new JobNotFoundException("Job ID", orderNumber);
-    }
-  }
+  //  @GetMapping("/jobs/{orderNumber}/order-number")
+  //  public List<Job> getJobByOrderNumber(@PathVariable(value = "orderNumber") String orderNumber)
+  // {
+  //    try {
+  //      return jobRepository.findByOrderNumber(orderNumber);
+  //    } catch (IllegalArgumentException e) {
+  //      throw new JobNotFoundException("Job ID", orderNumber);
+  //    }
+  //  }
 
-  @GetMapping("/jobs/{status}/status")
-  public List<Job> getJobByStatus(@PathVariable(value = "status") String jobStatus) {
-    try {
-      return jobRepository.findByJobStatus(JobStatus.valueOf(jobStatus.toUpperCase()));
-    } catch (IllegalArgumentException e) {
-      throw new JobNotFoundException("Job Status", jobStatus);
-    }
-  }
+  // @GetMapping("/jobs/{status}/status")
+  // public List<Job> getJobByStatus(@PathVariable(value = "status") String jobStatus) {
+  //  try {
+  //    return jobRepository.findByJobStatus(JobStatus.valueOf(jobStatus.toUpperCase()));
+  //  } catch (IllegalArgumentException e) {
+  //    throw new JobNotFoundException("Job Status", jobStatus);
+  //  }
+  // }
 
   @RequestMapping(
       value = "/successful",

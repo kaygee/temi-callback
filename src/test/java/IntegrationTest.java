@@ -21,9 +21,7 @@ import org.slf4j.LoggerFactory;
 
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import static io.restassured.RestAssured.given;
 import static io.restassured.config.RedirectConfig.redirectConfig;
@@ -34,7 +32,7 @@ public class IntegrationTest {
   private static final Logger LOG = LoggerFactory.getLogger(IntegrationTest.class);
 
   private static final String LOCALHOST_URL = "http://localhost:8080/";
-  private static final String JOBS_PATH = "jobs";
+  private static final String JOBS_PATH = "jobs" + "/all";
   private static final String JOBS_COUNT_PATH = JOBS_PATH + "/count";
   private static final String JOBS_FAILED_PATH = JOBS_PATH + "/failed";
   private static final String JOBS_TRANSCIBED_PATH = JOBS_PATH + "/transcribed";
@@ -50,6 +48,7 @@ public class IntegrationTest {
             .get(JOBS_COUNT_PATH)
             .as(Integer.class);
     assertThat(amount).isGreaterThanOrEqualTo(0);
+    LOG.info("Job count [" + amount + "].");
   }
 
   @Test
@@ -104,7 +103,7 @@ public class IntegrationTest {
   }
 
   @Test
-  public void canRespondWithSuccessfulRequestToTranscript() {
+  public void canRespondWithHttpSuccesCodeToTranscript() {
     List<Element> elements = new ArrayList<>();
     elements.add(getElement(ElementType.TEXT, "so", 16.39, 16.96, 0.99));
     elements.add(getElement(ElementType.PUNCT, " ", null, null, null));
