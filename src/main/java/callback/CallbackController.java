@@ -1,10 +1,12 @@
 package callback;
 
 import callback.beans.Job;
+import callback.beans.JobCount;
 import callback.beans.JobType;
 import callback.beans.OnPremisesFailure;
 import callback.beans.TranscriptCallback;
 import callback.repository.JobRepository;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,7 +20,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
@@ -30,9 +34,16 @@ public class CallbackController {
 
   @Autowired JobRepository jobRepository;
 
-  @GetMapping("/jobs/count")
-  public Integer getJobsCount() {
-    return jobRepository.countJobs();
+  @GetMapping(
+      value = "/jobs/count",
+      produces = {"application/json"})
+  public String getJobsCount() {
+    JobCount jobCount = new JobCount(jobRepository.countJobs());
+    try {
+      return new ObjectMapper().writeValueAsString(jobCount);
+    } catch (JsonProcessingException e) {
+      throw new RuntimeException(e.getMessage());
+    }
   }
 
   @GetMapping("/jobs/all")

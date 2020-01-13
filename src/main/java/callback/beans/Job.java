@@ -3,6 +3,8 @@ package callback.beans;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.http.HttpStatus;
@@ -339,64 +341,11 @@ public class Job {
 
   @Override
   public String toString() {
-    return "Job{"
-        + "databaseId="
-        + databaseId
-        + ", rawData='"
-        + rawData
-        + '\''
-        + ", httpStatus="
-        + httpStatus
-        + ", orderNumber='"
-        + orderNumber
-        + '\''
-        + ", clientReference='"
-        + clientReference
-        + '\''
-        + ", comment='"
-        + comment
-        + '\''
-        + ", id='"
-        + id
-        + '\''
-        + ", jobType="
-        + jobType
-        + ", status="
-        + status
-        + ", failure='"
-        + failure
-        + '\''
-        + ", failureDetail='"
-        + failureDetail
-        + '\''
-        + ", webUrl='"
-        + webUrl
-        + '\''
-        + ", durationSeconds="
-        + durationSeconds
-        + ", mediaUrl='"
-        + mediaUrl
-        + '\''
-        + ", name='"
-        + name
-        + '\''
-        + ", callbackUrl='"
-        + callbackUrl
-        + '\''
-        + ", metadata='"
-        + metadata
-        + '\''
-        + ", createdOn='"
-        + createdOn
-        + '\''
-        + ", lastModifiedOn='"
-        + lastModifiedOn
-        + '\''
-        + ", completedOn='"
-        + completedOn
-        + '\''
-        + ", receivedAt="
-        + receivedAt
-        + '}';
+    try {
+      return new ObjectMapper().writeValueAsString(this);
+    } catch (JsonProcessingException e) {
+      e.printStackTrace();
+    }
+    throw new RuntimeException("Couldn't write to JSON string!");
   }
 }

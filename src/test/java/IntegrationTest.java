@@ -1,6 +1,7 @@
 import callback.beans.Element;
 import callback.beans.ElementType;
 import callback.beans.Job;
+import callback.beans.JobCount;
 import callback.beans.Monologue;
 import callback.beans.OnPremisesFailure;
 import callback.beans.Transcript;
@@ -32,7 +33,8 @@ public class IntegrationTest {
   private static final Logger LOG = LoggerFactory.getLogger(IntegrationTest.class);
 
   private static final String LOCALHOST_URL = "http://localhost:8080/";
-  private static final String JOBS_PATH = "jobs" + "/all";
+  private static final String JOBS_PATH = "jobs";
+  private static final String JOBS_ALL_PATH = "jobs" + "/all";
   private static final String JOBS_COUNT_PATH = JOBS_PATH + "/count";
   private static final String JOBS_FAILED_PATH = JOBS_PATH + "/failed";
   private static final String JOBS_TRANSCIBED_PATH = JOBS_PATH + "/transcribed";
@@ -40,15 +42,15 @@ public class IntegrationTest {
 
   @Test
   public void canGetJobCount() {
-    Integer amount =
+    JobCount jobCount =
         given()
             .spec(getRequestSpecification())
-            .contentType(ContentType.TEXT)
+            .contentType(ContentType.JSON)
             .when()
             .get(JOBS_COUNT_PATH)
-            .as(Integer.class);
-    assertThat(amount).isGreaterThanOrEqualTo(0);
-    LOG.info("Job count [" + amount + "].");
+            .as(JobCount.class);
+    assertThat(jobCount.getCount()).isGreaterThanOrEqualTo(0);
+    LOG.info("Job count [" + jobCount + "].");
   }
 
   @Test
@@ -77,8 +79,8 @@ public class IntegrationTest {
   }
 
   @Test
-  public void canGetJobs() {
-    Job[] jobs = given().spec(getRequestSpecification()).when().get(JOBS_PATH).as(Job[].class);
+  public void canGetAllJobs() {
+    Job[] jobs = given().spec(getRequestSpecification()).when().get(JOBS_ALL_PATH).as(Job[].class);
     for (Job job : jobs) {
       LOG.info(job.toString());
     }
