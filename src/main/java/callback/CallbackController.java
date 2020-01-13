@@ -1,10 +1,10 @@
 package callback;
 
 import callback.beans.Job;
-import callback.beans.JobCallback;
 import callback.beans.JobStatus;
 import callback.beans.JobType;
-import callback.beans.OrderStatusInfo;
+import callback.beans.OnPremisesFailure;
+import callback.beans.TranscriptCallback;
 import callback.exception.JobNotFoundException;
 import callback.repository.JobRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.validation.Valid;
 import java.io.IOException;
 import java.util.List;
 
@@ -40,20 +39,19 @@ public class CallbackController {
     return jobRepository.countJobs();
   }
 
-  @GetMapping("/jobs")
-  public List<Job> getJobs(
-      @RequestParam(value = "type", required = false) String jobType,
-      @RequestParam(value = "status", required = false) String jobStatus) {
-    if (jobType != null && jobStatus != null) {
-      return jobRepository.findByJobTypeAndStatus(
-          jobType, JobStatus.valueOf(jobStatus.toUpperCase()));
-    } else if (jobType == null && jobStatus != null) {
-      return jobRepository.findByJobStatus(JobStatus.valueOf(jobStatus.toUpperCase()));
-    } else if (jobType != null && jobStatus == null) {
-      return jobRepository.findByJobType(JobType.valueOf(jobType.toUpperCase()));
-    } else {
-      return jobRepository.findAll();
-    }
+  @GetMapping("/jobs/all")
+  public List<Job> getJobs() {
+    return jobRepository.findAll();
+  }
+
+  @GetMapping("/jobs/failed")
+  public List<Job> getFailedJobs() {
+    return jobRepository.findByJobType(JobType.FAILED.toString());
+  }
+
+  @GetMapping("/jobs/transcribed")
+  public List<Job> getTranscribedJobs() {
+    return jobRepository.findByJobType(JobType.TRANSCRIPTION.toString());
   }
 
   @GetMapping("/jobs/{id}/job-id")
@@ -88,119 +86,31 @@ public class CallbackController {
       method = {GET, POST})
   @ResponseBody
   public ResponseEntity<Object> respondSuccessful(@RequestBody String request) {
-    LOG.info(request);
+    LOG.info("Incoming request [" + request + "].");
+    Job job = new Job();
     try {
-      JobCallback job = new ObjectMapper().readValue(request, JobCallback.class);
-      job.getJob().setHttpStatus(HttpStatus.OK);
-      job.getJob().setRawData(request);
-      jobRepository.save(job.getJob());
+      if (request.contains("failure") && request.contains("metadata")) {
+        OnPremisesFailure onPremisesFailure =
+            new ObjectMapper().readValue(request, OnPremisesFailure.class);
+        job.setFailure(onPremisesFailure.getFailure());
+        job.setFailureDetail(onPremisesFailure.getFailureDetail());
+        job.setMetadata(onPremisesFailure.getMetadata());
+        job.setJobType(JobType.FAILED.toString());
+      } else if (request.contains("transcript") && request.contains("monologues")) {
+        TranscriptCallback transcriptCallback =
+            new ObjectMapper().readValue(request, TranscriptCallback.class);
+        job.setMetadata(transcriptCallback.getTranscript().getMetadata());
+        job.setJobType(JobType.TRANSCRIPTION.toString());
+      } else {
+        throw new RuntimeException("I don't know what this is?! [" + request + "].");
+      }
+
+      job.setHttpStatus(HttpStatus.OK);
+      job.setRawData(request);
+      jobRepository.save(job);
     } catch (IOException e) {
       e.printStackTrace();
     }
     return ResponseEntity.status(HttpStatus.OK).body(null);
-  }
-
-  @RequestMapping(
-      value = "/successful-rev-ai",
-      method = {GET, POST})
-  @ResponseBody
-  public ResponseEntity<Object> respondOkRevAi(@RequestBody String request) {
-    LOG.info(request);
-    try {
-      JobCallback job = new ObjectMapper().readValue(request, JobCallback.class);
-      job.getJob().setRawData(request);
-      job.getJob().setHttpStatus(HttpStatus.OK);
-      job.getJob().setJobType(JobType.REVAI);
-      jobRepository.save(job.getJob());
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-    return ResponseEntity.status(HttpStatus.OK).body(null);
-  }
-
-  @RequestMapping(
-      value = "/successful-rev-api",
-      method = {GET, POST})
-  @ResponseBody
-  public ResponseEntity<Object> respondOkRevApi(@RequestBody String request) {
-    LOG.info(request);
-    try {
-      OrderStatusInfo job = new ObjectMapper().readValue(request, OrderStatusInfo.class);
-      job.getJob().setRawData(request);
-      job.getJob().setHttpStatus(HttpStatus.OK);
-      job.getJob().setJobType(JobType.REVAPI);
-      jobRepository.save(job.getJob());
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-    return ResponseEntity.status(HttpStatus.OK).body(null);
-  }
-
-  @RequestMapping(
-      value = "/bad-request",
-      method = {GET, POST})
-  @ResponseBody
-  public ResponseEntity<Object> respondBadRequest(@RequestBody String request) {
-    LOG.info(request);
-    try {
-      JobCallback job = new ObjectMapper().readValue(request, JobCallback.class);
-      job.getJob().setRawData(request);
-      job.getJob().setHttpStatus(HttpStatus.BAD_REQUEST);
-      jobRepository.save(job.getJob());
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
-  }
-
-  @RequestMapping(
-      value = "/unauthorized",
-      method = {GET, POST})
-  @ResponseBody
-  public ResponseEntity<Object> respondUnauthorized(@RequestBody String request) {
-    LOG.info(request);
-    try {
-      JobCallback job = new ObjectMapper().readValue(request, JobCallback.class);
-      job.getJob().setRawData(request);
-      job.getJob().setHttpStatus(HttpStatus.UNAUTHORIZED);
-      jobRepository.save(job.getJob());
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-    return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
-  }
-
-  @RequestMapping(
-      value = "/internal-server-error",
-      method = {GET, POST})
-  @ResponseBody
-  public ResponseEntity<Object> respondInternalServerError(@Valid @RequestBody String request) {
-    LOG.info(request);
-    try {
-      JobCallback job = new ObjectMapper().readValue(request, JobCallback.class);
-      job.getJob().setRawData(request);
-      job.getJob().setHttpStatus(HttpStatus.INTERNAL_SERVER_ERROR);
-      jobRepository.save(job.getJob());
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-  }
-
-  @RequestMapping(
-      value = "/gone",
-      method = {GET, POST})
-  @ResponseBody
-  public ResponseEntity<Object> respondGone(@RequestBody String request) {
-    LOG.info(request);
-    try {
-      JobCallback job = new ObjectMapper().readValue(request, JobCallback.class);
-      job.getJob().setRawData(request);
-      job.getJob().setHttpStatus(HttpStatus.GONE);
-      jobRepository.save(job.getJob());
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-    return ResponseEntity.status(HttpStatus.GONE).body(null);
   }
 }

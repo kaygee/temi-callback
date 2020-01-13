@@ -22,11 +22,11 @@ public interface JobRepository extends JpaRepository<Job, Long> {
   @Query("FROM Job WHERE status = :status")
   List<Job> findByJobStatus(JobStatus status);
 
-  @Query("SELECT COUNT(id) FROM Job")
+  @Query("SELECT COUNT(jobType) FROM Job")
   Integer countJobs();
 
   @Query("FROM Job WHERE job_type = :jobType")
-  List<Job> findByJobType(JobType jobType);
+  List<Job> findByJobType(String jobType);
 
   @Query("FROM Job WHERE job_type = :jobType AND status = :status")
   List<Job> findByJobTypeAndStatus(String jobType, JobStatus status);

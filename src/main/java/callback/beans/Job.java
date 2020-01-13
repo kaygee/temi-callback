@@ -57,9 +57,9 @@ public class Job {
   @JsonProperty("id")
   private String id;
 
-  @Enumerated(EnumType.STRING)
+  //  @Enumerated(EnumType.STRING)
   @Column(name = "job_type")
-  private JobType jobType;
+  private String jobType;
 
   @NonNull
   @Enumerated(EnumType.STRING)
@@ -129,14 +129,6 @@ public class Job {
 
   public void setRawData(String rawData) {
     this.rawData = rawData;
-  }
-
-  public void setJobType(JobType jobType) {
-    this.jobType = jobType;
-  }
-
-  public JobType getJobType() {
-    return jobType;
   }
 
   public String getMediaUrl() {
@@ -281,6 +273,14 @@ public class Job {
 
   public void setCompletedOn(String completedOn) {
     this.completedOn = completedOn;
+  }
+
+  public String getJobType() {
+    return jobType;
+  }
+
+  public void setJobType(String jobType) {
+    this.jobType = jobType;
   }
 
   @Override

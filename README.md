@@ -22,6 +22,9 @@ I use an in-memory database to keep track of all the callback requests I get.
 ## Build
 - `mvn package`
 
+## Build Package Without Running Integration Tests
+- `mvn -Dmaven.test.skip=true package` 
+
 ## Run
 - `java -jar ./target/temi-callback-mock-0.1.0.jar`
 

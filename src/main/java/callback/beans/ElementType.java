@@ -2,16 +2,19 @@ package callback.beans;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public enum JobType {
-  @JsonProperty("failed")
-  FAILED("failed"),
+public enum ElementType {
+  @JsonProperty("punct")
+  PUNCT("punct"),
 
-  @JsonProperty("transcription")
-  TRANSCRIPTION("transcription");
+  @JsonProperty("text")
+  TEXT("text"),
+
+  @JsonProperty("unknown")
+  UNKNOWN("unknown");
 
   private final String val;
 
-  JobType(String val) {
+  ElementType(String val) {
     this.val = val;
   }
 
