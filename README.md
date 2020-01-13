@@ -9,7 +9,6 @@ I use an in-memory database to keep track of all the callback requests I get.
 - H2 (http://www.h2database.com/html/main.html)
 - Rest (https://en.wikipedia.org/wiki/Representational_state_transfer)
 - Spring JPA (https://projects.spring.io/spring-data-jpa/)
-- Temi API (https://www.temi.com/api)
 - Rev.ai API (https://www.rev.ai/)
 - Jackson (https://github.com/FasterXML/jackson)
 
@@ -30,26 +29,20 @@ I use an in-memory database to keep track of all the callback requests I get.
 
 ## Methods
 ### Management related
-- `/jobs` - Return all the jobs that have been received.
-- `/jobs/{id}` - Return the job(s) that have the corresponding jobId.
-- `/jobs/{status}/status` - Return the job(s) that have the corresponding status.
+- `/jobs/all` - Return all the jobs that have been received.
+- `/jobs/count` - Return the count of jobs stored in the database.
+- `/jobs/failed` - Return all the failed jobs.
+- `/jobs/transcribed` - Return all the transcribed jobs.
 ### Callback related
 These all assume that the payload complies with https://api.temi.com/api/reference/v1 or https://rev.ai.
 
 All paths return the HTTP status code of the name of the path. For example ``/successful` returns HTTP 200.
 - `/successful`
-- `/bad-request`
-- `/unauthorized`
-- `/internal-server-error`
-- `/gone`
-
-### Parameters
-### Management related
-- `/jobs` - has two optional parameters.
-    - `type` which is the type of job.
-    - `status` which is the staus of the job.
 
 ## Examples
-- http://localhost:8080/jobs?type=revai&status=transcribed
-- http://localhost:8080/jobs?type=temi
-- http://localhost:8080/jobs?status=failed
+### Endpoint Examples
+- http://localhost:8080/jobs/all
+- http://localhost:8080/jobs/transcribed
+- http://localhost:8080/jobs/failed
+### Integration Tests
+- See the class `IntegrationTest.java` for examples.
