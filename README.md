@@ -1,6 +1,6 @@
 # Temi Callback Mock Service
 
-I'm a callback mock service for http://www.temi.com/api and http://www.rev.ai. It'll start up and listen on port 8080. Different paths return different HTTP status codes. I store jobs I've received in an in memory database and can return information on the jobs.
+I'm a callback mock service for http://www.rev.ai. I'll start up and listen on port 8080. Different paths return different HTTP status codes. I store jobs I've received in an in memory database and can return information on the jobs.
 
 I use an in-memory database to keep track of all the callback requests I get.
 
