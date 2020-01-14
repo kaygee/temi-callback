@@ -12,14 +12,8 @@ import java.util.List;
 public interface JobRepository extends JpaRepository<Job, Long> {
 
   // This is HQL NOT SQL.
-  @Query("FROM Job WHERE id = :jobId")
-  List<Job> findByJobId(String jobId);
-
-  @Query("FROM Job WHERE order_number = :orderNumber")
-  List<Job> findByOrderNumber(String orderNumber);
-
-  @Query("FROM Job WHERE status = :status")
-  List<Job> findByJobStatus(JobStatus status);
+  @Query("FROM Job WHERE metadata = :metadata")
+  List<Job> findByJobMetadata(String metadata);
 
   @Query("SELECT COUNT(jobType) FROM Job")
   Integer countJobs();

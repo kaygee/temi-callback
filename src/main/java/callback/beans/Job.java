@@ -97,7 +97,7 @@ public class Job {
   @JsonProperty("callback_url")
   private String callbackUrl;
 
-  @Column(name = "metadata", length = 2048)
+  @Column(name = "metadata", length = 4096)
   @JsonProperty("metadata")
   private String metadata;
 

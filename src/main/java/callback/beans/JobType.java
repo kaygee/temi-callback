@@ -7,7 +7,10 @@ public enum JobType {
   FAILED("failed"),
 
   @JsonProperty("transcription")
-  TRANSCRIPTION("transcription");
+  TRANSCRIPTION("transcription"),
+
+  @JsonProperty("initializataion")
+  INITIALIZATION("initializataion");
 
   private final String val;
 

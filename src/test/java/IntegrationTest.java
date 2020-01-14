@@ -33,12 +33,14 @@ public class IntegrationTest {
   private static final Logger LOG = LoggerFactory.getLogger(IntegrationTest.class);
 
   private static final String LOCALHOST_URL = "http://localhost:8080/";
-  private static final String JOBS_PATH = "jobs";
-  private static final String JOBS_ALL_PATH = "jobs" + "/all";
-  private static final String JOBS_COUNT_PATH = JOBS_PATH + "/count";
-  private static final String JOBS_FAILED_PATH = JOBS_PATH + "/failed";
-  private static final String JOBS_TRANSCIBED_PATH = JOBS_PATH + "/transcribed";
+  private static final String JOBS_PATH = "jobs/";
+  private static final String JOBS_ALL_PATH = JOBS_PATH + "all";
+  private static final String JOBS_COUNT_PATH = JOBS_PATH + "count";
+  private static final String JOBS_FAILED_PATH = JOBS_PATH + "failed";
+  private static final String JOBS_TRANSCIBED_PATH = JOBS_PATH + "transcribed";
+  private static final String JOBS_METADATA_PATH = JOBS_PATH + "{metadata}" + "/metadata";
   private static final String SUCCESSFUL_REQUEST_PATH = "successful";
+  private static final String METADATA = "Let it go!";
 
   @Test
   public void canGetJobCount() {
@@ -50,7 +52,7 @@ public class IntegrationTest {
             .get(JOBS_COUNT_PATH)
             .as(JobCount.class);
     assertThat(jobCount.getCount()).isGreaterThanOrEqualTo(0);
-    LOG.info("Job count [" + jobCount + "].");
+    LOG.info("Job count [" + jobCount.getCount() + "].");
   }
 
   @Test
@@ -79,6 +81,21 @@ public class IntegrationTest {
   }
 
   @Test
+  public void canGetJobByMetadata() {
+    Job[] jobs =
+        given()
+            .spec(getRequestSpecification())
+            .with()
+            .when()
+            .get(JOBS_METADATA_PATH.replace("{metadata}", METADATA))
+            .as(Job[].class);
+    LOG.info("Jobs with metadata of [" + METADATA + "].");
+    for (Job job : jobs) {
+      LOG.info(job.toString());
+    }
+  }
+
+  @Test
   public void canGetAllJobs() {
     Job[] jobs = given().spec(getRequestSpecification()).when().get(JOBS_ALL_PATH).as(Job[].class);
     for (Job job : jobs) {
@@ -91,7 +108,7 @@ public class IntegrationTest {
     OnPremisesFailure onPremisesFailure = new OnPremisesFailure();
     onPremisesFailure.setFailure("transcoding");
     onPremisesFailure.setFailureDetail("Transcoding failed. Please check logs for more details");
-    onPremisesFailure.setMetadata("Should fail txt format");
+    onPremisesFailure.setMetadata(METADATA);
 
     Response response =
         given()
@@ -119,7 +136,7 @@ public class IntegrationTest {
     monologues.add(monologue);
 
     Transcript transcript = new Transcript();
-    transcript.setMetadata("Let it go!");
+    transcript.setMetadata(METADATA);
     transcript.setMonologues(monologues.toArray(new Monologue[monologues.size()]));
 
     TranscriptCallback transcriptCallback = new TranscriptCallback();

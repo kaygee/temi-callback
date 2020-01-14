@@ -5,6 +5,7 @@ import callback.beans.JobCount;
 import callback.beans.JobType;
 import callback.beans.OnPremisesFailure;
 import callback.beans.TranscriptCallback;
+import callback.exception.JobNotFoundException;
 import callback.repository.JobRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -14,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -59,33 +61,14 @@ public class CallbackController {
     return jobRepository.findByJobType(JobType.TRANSCRIPTION.toString());
   }
 
-  //  @GetMapping("/jobs/{id}/job-id")
-  //  public List<Job> getJobById(@PathVariable(value = "id") String id) {
-  //    try {
-  //      return jobRepository.findByJobId(id);
-  //    } catch (IllegalArgumentException e) {
-  //      throw new JobNotFoundException("Job ID", id);
-  //    }
-  //  }
-
-  //  @GetMapping("/jobs/{orderNumber}/order-number")
-  //  public List<Job> getJobByOrderNumber(@PathVariable(value = "orderNumber") String orderNumber)
-  // {
-  //    try {
-  //      return jobRepository.findByOrderNumber(orderNumber);
-  //    } catch (IllegalArgumentException e) {
-  //      throw new JobNotFoundException("Job ID", orderNumber);
-  //    }
-  //  }
-
-  // @GetMapping("/jobs/{status}/status")
-  // public List<Job> getJobByStatus(@PathVariable(value = "status") String jobStatus) {
-  //  try {
-  //    return jobRepository.findByJobStatus(JobStatus.valueOf(jobStatus.toUpperCase()));
-  //  } catch (IllegalArgumentException e) {
-  //    throw new JobNotFoundException("Job Status", jobStatus);
-  //  }
-  // }
+  @GetMapping("/jobs/{metadata}/metadata")
+  public List<Job> getJobByStatus(@PathVariable(value = "metadata") String metadata) {
+    try {
+      return jobRepository.findByJobMetadata(metadata);
+    } catch (IllegalArgumentException e) {
+      throw new JobNotFoundException("Job Metadata", metadata);
+    }
+  }
 
   @RequestMapping(
       value = "/successful",
@@ -107,6 +90,8 @@ public class CallbackController {
             new ObjectMapper().readValue(request, TranscriptCallback.class);
         job.setMetadata(transcriptCallback.getTranscript().getMetadata());
         job.setJobType(JobType.TRANSCRIPTION.toString());
+      } else if (request.contains("success")) {
+        job.setJobType(JobType.INITIALIZATION.toString());
       } else {
         throw new RuntimeException("I don't know what this is?! [" + request + "].");
       }
