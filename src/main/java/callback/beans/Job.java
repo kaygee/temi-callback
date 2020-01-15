@@ -18,6 +18,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Lob;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -37,7 +38,8 @@ public class Job {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long databaseId;
 
-  @Column(name = "raw_data", length = 4096)
+  @Column(name = "raw_data", columnDefinition = "CLOB NOT NULL")
+  @Lob
   private String rawData;
 
   @Column(name = "http_status")
