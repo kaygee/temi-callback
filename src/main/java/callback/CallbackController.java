@@ -125,7 +125,7 @@ public class CallbackController {
             "Received request with metadata ["
                 + transcriptCallback.getMetadata()
                 + "] with type ["
-                + JobType.FAILED.toString()
+                + JobType.TRANSCRIPTION.toString()
                 + "].");
         job.setJobType(JobType.TRANSCRIPTION.toString());
       } else if (request.contains("success")) {
