@@ -1,7 +1,9 @@
 package callback;
 
+import callback.beans.InitializationStatus;
 import callback.beans.Job;
 import callback.beans.JobCount;
+import callback.beans.JobStatus;
 import callback.beans.JobType;
 import callback.beans.OnPremisesFailure;
 import callback.beans.TranscriptCallback;
@@ -33,6 +35,20 @@ public class CallbackController {
   private static final Logger LOG = LoggerFactory.getLogger(CallbackController.class);
 
   @Autowired JobRepository jobRepository;
+
+  @GetMapping(
+      value = "/health",
+      produces = {"application/json"})
+  public String healthCheck() {
+    InitializationStatus status = new InitializationStatus();
+    status.setSuccess(true);
+    try {
+      LOG.info("Returning health status.");
+      return new ObjectMapper().writeValueAsString(status);
+    } catch (JsonProcessingException e) {
+      throw new RuntimeException(e.getMessage());
+    }
+  }
 
   @GetMapping(
       value = "/jobs/count",
