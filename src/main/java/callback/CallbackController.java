@@ -97,7 +97,7 @@ public class CallbackController {
   }
 
   @RequestMapping(
-      value = "/successful",
+      value = "/jobs/successful",
       method = {GET, POST})
   @ResponseBody
   public ResponseEntity<Object> respondSuccessful(@RequestBody String request) {
