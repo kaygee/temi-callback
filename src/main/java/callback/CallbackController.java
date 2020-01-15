@@ -134,7 +134,7 @@ public class CallbackController {
         throw new RuntimeException("I don't know what this is?! [" + request + "].");
       }
 
-      job.setHttpStatus(HttpStatus.OK);
+      job.setHttpStatus(HttpStatus.OK.value());
       job.setRawData(request);
       jobRepository.save(job);
     } catch (IOException e) {

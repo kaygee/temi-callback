@@ -43,7 +43,7 @@ public class Job {
   private String rawData;
 
   @Column(name = "http_status")
-  private HttpStatus httpStatus;
+  private Integer httpStatus;
 
   @Column(name = "order_number")
   @JsonProperty("order_number")
@@ -118,11 +118,11 @@ public class Job {
   @Temporal(TemporalType.TIMESTAMP)
   private Date receivedAt;
 
-  public HttpStatus getHttpStatus() {
+  public Integer getHttpStatus() {
     return httpStatus;
   }
 
-  public void setHttpStatus(HttpStatus httpStatus) {
+  public void setHttpStatus(Integer httpStatus) {
     this.httpStatus = httpStatus;
   }
 
