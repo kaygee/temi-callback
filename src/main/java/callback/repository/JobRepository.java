@@ -15,6 +15,9 @@ public interface JobRepository extends JpaRepository<Job, Long> {
   @Query("FROM Job WHERE metadata = :metadata")
   List<Job> findByJobMetadata(String metadata);
 
+  @Query("SELECT COUNT(j) FROM Job j WHERE j.metadata = :metadata")
+  Integer countJobsWithMetadata(String metadata);
+
   @Query("SELECT COUNT(jobType) FROM Job")
   Integer countJobs();
 

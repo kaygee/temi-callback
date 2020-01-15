@@ -61,7 +61,6 @@ public class Job {
   @JsonProperty("id")
   private String id;
 
-  //  @Enumerated(EnumType.STRING)
   @Column(name = "job_type")
   private String jobType;
 

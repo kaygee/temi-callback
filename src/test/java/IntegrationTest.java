@@ -39,18 +39,14 @@ public class IntegrationTest {
   private static final String JOBS_FAILED_PATH = JOBS_PATH + "failed";
   private static final String JOBS_TRANSCIBED_PATH = JOBS_PATH + "transcribed";
   private static final String JOBS_METADATA_PATH = JOBS_PATH + "{metadata}" + "/metadata";
+  private static final String JOBS_METADATA_COUNT_PATH = JOBS_PATH + "{metadata}" + "/count";
   private static final String SUCCESSFUL_REQUEST_PATH = "successful";
-  private static final String METADATA = "Let it go!";
+  private static final String METADATA = "x0cce8zkPfgc6CmjL8X9Dgvje";
 
   @Test
   public void canGetJobCount() {
     JobCount jobCount =
-        given()
-            .spec(getRequestSpecification())
-            .contentType(ContentType.JSON)
-            .when()
-            .get(JOBS_COUNT_PATH)
-            .as(JobCount.class);
+        given().spec(getRequestSpecification()).when().get(JOBS_COUNT_PATH).as(JobCount.class);
     assertThat(jobCount.getCount()).isGreaterThanOrEqualTo(0);
     LOG.info("Job count [" + jobCount.getCount() + "].");
   }
@@ -96,6 +92,18 @@ public class IntegrationTest {
   }
 
   @Test
+  public void canGetJobCountByMetadata() {
+    JobCount jobCount =
+        given()
+            .spec(getRequestSpecification())
+            .with()
+            .when()
+            .get(JOBS_METADATA_COUNT_PATH.replace("{metadata}", METADATA))
+            .as(JobCount.class);
+    LOG.info("Jobs with metadata of [" + METADATA + "] is [" + jobCount.getCount() + "].");
+  }
+
+  @Test
   public void canGetAllJobs() {
     Job[] jobs = given().spec(getRequestSpecification()).when().get(JOBS_ALL_PATH).as(Job[].class);
     for (Job job : jobs) {
@@ -113,7 +121,6 @@ public class IntegrationTest {
     Response response =
         given()
             .spec(getRequestSpecification())
-            .contentType(ContentType.JSON)
             .when()
             .body(onPremisesFailure)
             .post(SUCCESSFUL_REQUEST_PATH);
@@ -136,10 +143,10 @@ public class IntegrationTest {
     monologues.add(monologue);
 
     Transcript transcript = new Transcript();
-    transcript.setMetadata(METADATA);
     transcript.setMonologues(monologues.toArray(new Monologue[monologues.size()]));
 
     TranscriptCallback transcriptCallback = new TranscriptCallback();
+    transcriptCallback.setMetadata(METADATA);
     transcriptCallback.setTranscript(transcript);
 
     Response response =
@@ -179,6 +186,7 @@ public class IntegrationTest {
     requestSpecBuilder.setConfig(
         RestAssured.config().redirect(redirectConfig().followRedirects(false)));
     requestSpecBuilder.addFilters(getFilters());
+    requestSpecBuilder.setContentType(ContentType.JSON);
     return requestSpecBuilder.build();
   }
 

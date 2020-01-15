@@ -40,33 +40,59 @@ public class CallbackController {
   public String getJobsCount() {
     JobCount jobCount = new JobCount(jobRepository.countJobs());
     try {
+      LOG.info("Returning count of all jobs.");
       return new ObjectMapper().writeValueAsString(jobCount);
     } catch (JsonProcessingException e) {
       throw new RuntimeException(e.getMessage());
     }
   }
 
-  @GetMapping("/jobs/all")
+  @GetMapping(
+      value = "/jobs/all",
+      produces = {"application/json"})
   public List<Job> getJobs() {
+    LOG.info("Returning all jobs.");
     return jobRepository.findAll();
   }
 
-  @GetMapping("/jobs/failed")
+  @GetMapping(
+      value = "/jobs/failed",
+      produces = {"application/json"})
   public List<Job> getFailedJobs() {
+    LOG.info("Returning all failed jobs.");
     return jobRepository.findByJobType(JobType.FAILED.toString());
   }
 
-  @GetMapping("/jobs/transcribed")
+  @GetMapping(
+      value = "/jobs/transcribed",
+      produces = {"application/json"})
   public List<Job> getTranscribedJobs() {
+    LOG.info("Returning all transciption jobs.");
     return jobRepository.findByJobType(JobType.TRANSCRIPTION.toString());
   }
 
-  @GetMapping("/jobs/{metadata}/metadata")
-  public List<Job> getJobByStatus(@PathVariable(value = "metadata") String metadata) {
+  @GetMapping(
+      value = "/jobs/{metadata}/metadata",
+      produces = {"application/json"})
+  public List<Job> getJobByMetadata(@PathVariable(value = "metadata") String metadata) {
     try {
+      LOG.info("Returning jobs with metadata of [" + metadata + "].");
       return jobRepository.findByJobMetadata(metadata);
     } catch (IllegalArgumentException e) {
       throw new JobNotFoundException("Job Metadata", metadata);
+    }
+  }
+
+  @GetMapping(
+      value = "/jobs/{metadata}/count",
+      produces = {"application/json"})
+  public String getJobCountWithMetadata(@PathVariable(value = "metadata") String metadata) {
+    JobCount jobCount = new JobCount(jobRepository.countJobsWithMetadata(metadata));
+    LOG.info("Returning count of jobs with metadata of [" + metadata + "].");
+    try {
+      return new ObjectMapper().writeValueAsString(jobCount);
+    } catch (JsonProcessingException e) {
+      throw new RuntimeException(e.getMessage());
     }
   }
 
@@ -75,7 +101,7 @@ public class CallbackController {
       method = {GET, POST})
   @ResponseBody
   public ResponseEntity<Object> respondSuccessful(@RequestBody String request) {
-    LOG.info("Incoming request [" + request + "].");
+    LOG.info("Incoming request...");
     Job job = new Job();
     try {
       if (request.contains("failure") && request.contains("metadata")) {
@@ -85,10 +111,22 @@ public class CallbackController {
         job.setFailureDetail(onPremisesFailure.getFailureDetail());
         job.setMetadata(onPremisesFailure.getMetadata());
         job.setJobType(JobType.FAILED.toString());
+        LOG.info(
+            "Received request with metadata ["
+                + onPremisesFailure.getMetadata()
+                + "] with type ["
+                + JobType.FAILED.toString()
+                + "].");
       } else if (request.contains("transcript") && request.contains("monologues")) {
         TranscriptCallback transcriptCallback =
             new ObjectMapper().readValue(request, TranscriptCallback.class);
-        job.setMetadata(transcriptCallback.getTranscript().getMetadata());
+        job.setMetadata(transcriptCallback.getMetadata());
+        LOG.info(
+            "Received request with metadata ["
+                + transcriptCallback.getMetadata()
+                + "] with type ["
+                + JobType.FAILED.toString()
+                + "].");
         job.setJobType(JobType.TRANSCRIPTION.toString());
       } else if (request.contains("success")) {
         job.setJobType(JobType.INITIALIZATION.toString());
@@ -102,6 +140,7 @@ public class CallbackController {
     } catch (IOException e) {
       e.printStackTrace();
     }
+    LOG.info("Responding to request...");
     return ResponseEntity.status(HttpStatus.OK).body(null);
   }
 }
