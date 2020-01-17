@@ -1,6 +1,6 @@
 # Temi Callback Mock Service
 
-I'm a callback mock service for http://www.rev.ai. I'll start up and listen on port 8080. Different paths return different HTTP status codes. I store jobs I've received in an in memory database and can return information on the jobs.
+I'm a callback mock service for http://www.rev.ai. I'll start up and listen on port 7331. Different paths return different HTTP status codes. I store jobs I've received in an in memory database and can return information on the jobs.
 
 I use an in-memory database to keep track of all the callback requests I get.
 
@@ -45,8 +45,8 @@ All paths return the HTTP status code of the name of the path. For example ``/su
 
 ## Examples
 ### Endpoint Examples
-- http://localhost:8080/jobs/all
-- http://localhost:8080/jobs/transcribed
-- http://localhost:8080/jobs/failed
+- http://localhost:7331/jobs/all
+- http://localhost:7331/jobs/transcribed
+- http://localhost:7331/jobs/failed
 ### Integration Tests
 - See the class `IntegrationTest.java` for examples.
