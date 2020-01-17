@@ -54,7 +54,20 @@ public class CallbackController {
       value = "/jobs/count",
       produces = {"application/json"})
   public String getJobsCount() {
-    JobCount jobCount = new JobCount(jobRepository.countJobs());
+    // Do a bunch of queries to get the totals.
+    Integer overallCount = jobRepository.countJobs();
+    Integer failedCount = jobRepository.countJobsWithType(JobType.FAILED.toString());
+    Integer initializationCount =
+        jobRepository.countJobsWithType(JobType.INITIALIZATION.toString());
+    Integer transcribedCount = jobRepository.countJobsWithType(JobType.TRANSCRIPTION.toString());
+
+    // Set the object to return.
+    JobCount jobCount = new JobCount();
+    jobCount.setFailedCount(failedCount);
+    jobCount.setInitializationCount(initializationCount);
+    jobCount.setOverallCount(overallCount);
+    jobCount.setTranscribedCount(transcribedCount);
+
     try {
       LOG.info("Returning count of all jobs.");
       return new ObjectMapper().writeValueAsString(jobCount);
@@ -69,6 +82,14 @@ public class CallbackController {
   public List<Job> getJobs() {
     LOG.info("Returning all jobs.");
     return jobRepository.findAll();
+  }
+
+  @GetMapping(
+      value = "/jobs/initialization",
+      produces = {"application/json"})
+  public List<Job> getInitializationJobs() {
+    LOG.info("Returning all initialization requests.");
+    return jobRepository.findByJobType(JobType.INITIALIZATION.toString());
   }
 
   @GetMapping(
@@ -117,7 +138,7 @@ public class CallbackController {
       method = {GET, POST})
   @ResponseBody
   public ResponseEntity<Object> respondSuccessful(@RequestBody String request) {
-    LOG.info("Incoming request...");
+    LOG.info("Incoming request... [" + request + "].");
     Job job = new Job();
     try {
       if (request.contains("failure") && request.contains("metadata")) {
@@ -145,6 +166,7 @@ public class CallbackController {
                 + "].");
         job.setJobType(JobType.TRANSCRIPTION.toString());
       } else if (request.contains("success")) {
+        LOG.info("Received request for initialization.");
         job.setJobType(JobType.INITIALIZATION.toString());
       } else {
         throw new RuntimeException("I don't know what this is?! [" + request + "].");

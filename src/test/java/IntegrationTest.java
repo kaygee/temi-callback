@@ -38,17 +38,33 @@ public class IntegrationTest {
   private static final String JOBS_COUNT_PATH = JOBS_PATH + "count";
   private static final String JOBS_FAILED_PATH = JOBS_PATH + "failed";
   private static final String JOBS_TRANSCIBED_PATH = JOBS_PATH + "transcribed";
+  private static final String JOBS_INITIALIZATION_PATH = JOBS_PATH + "initialization";
   private static final String JOBS_METADATA_PATH = JOBS_PATH + "{metadata}" + "/metadata";
   private static final String JOBS_METADATA_COUNT_PATH = JOBS_PATH + "{metadata}" + "/count";
   private static final String SUCCESSFUL_REQUEST_PATH = "successful";
-  private static final String METADATA = "x0cce8zkPfgc6CmjL8X9Dgvje";
+  private static final String METADATA = "dfaNJDNqFDRg3l3Zzej9O9TpJ";
 
   @Test
   public void canGetJobCount() {
     JobCount jobCount =
         given().spec(getRequestSpecification()).when().get(JOBS_COUNT_PATH).as(JobCount.class);
-    assertThat(jobCount.getCount()).isGreaterThanOrEqualTo(0);
-    LOG.info("Job count [" + jobCount.getCount() + "].");
+    assertThat(jobCount.getOverallCount()).isGreaterThanOrEqualTo(0);
+    LOG.info("Job counts [" + jobCount.toString() + "].");
+  }
+
+  @Test
+  public void canGetJobByInitializationType() {
+    Job[] jobs =
+        given()
+            .spec(getRequestSpecification())
+            .with()
+            .when()
+            .get(JOBS_INITIALIZATION_PATH)
+            .as(Job[].class);
+    LOG.info("Initialization requests...");
+    for (Job job : jobs) {
+      LOG.info(job.toString());
+    }
   }
 
   @Test
@@ -100,7 +116,7 @@ public class IntegrationTest {
             .when()
             .get(JOBS_METADATA_COUNT_PATH.replace("{metadata}", METADATA))
             .as(JobCount.class);
-    LOG.info("Jobs with metadata of [" + METADATA + "] is [" + jobCount.getCount() + "].");
+    LOG.info("Jobs with metadata of [" + METADATA + "] is [" + jobCount.getOverallCount() + "].");
   }
 
   @Test
