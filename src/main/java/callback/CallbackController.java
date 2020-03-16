@@ -23,7 +23,10 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.client.BufferingClientHttpRequestFactory;
+import org.springframework.http.client.ClientHttpRequestFactory;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
+import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -216,7 +219,11 @@ public class CallbackController {
     } catch (JsonProcessingException e) {
       e.printStackTrace();
     }
-    RestTemplate restTemplate = new RestTemplate(new HttpComponentsClientHttpRequestFactory());
+
+    ClientHttpRequestFactory factory =
+        new BufferingClientHttpRequestFactory(new SimpleClientHttpRequestFactory());
+
+    RestTemplate restTemplate = new RestTemplate(factory);
     restTemplate.setInterceptors(
         Collections.singletonList(new RequestResponseLoggingInterceptor()));
     HttpHeaders httpHeaders = new HttpHeaders();
