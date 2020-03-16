@@ -3,28 +3,42 @@ package callback;
 import callback.beans.InitializationStatus;
 import callback.beans.Job;
 import callback.beans.JobCount;
-import callback.beans.JobStatus;
 import callback.beans.JobType;
+import callback.beans.OnPremisesBilling;
 import callback.beans.OnPremisesFailure;
 import callback.beans.TranscriptCallback;
 import callback.exception.JobNotFoundException;
+import callback.logger.RequestResponseLoggingInterceptor;
 import callback.repository.JobRepository;
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
+import java.io.StringWriter;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
@@ -173,12 +187,65 @@ public class CallbackController {
       }
 
       job.setHttpStatus(HttpStatus.OK.value());
-      job.setRawData(request);
+
+      job.setRawData(getMinifiedJson(request));
       jobRepository.save(job);
     } catch (IOException e) {
       e.printStackTrace();
     }
     LOG.info("Responding to request...");
     return ResponseEntity.status(HttpStatus.OK).body(null);
+  }
+
+  @RequestMapping(
+      value = "/billing",
+      method = {POST})
+  @ResponseBody
+  public ResponseEntity<Object> respondBillingSidecar(
+      @RequestBody String request, @RequestHeader Map<String, String> headers) {
+    LOG.info("Incoming billing request... [" + request + "].");
+    LOG.info("Incoming billing request headers...");
+    headers.forEach(
+        (key, value) -> {
+          LOG.info("Header key [" + key + "], value [" + value + "].");
+        });
+
+    OnPremisesBilling onPremisesBilling = null;
+    try {
+      onPremisesBilling = new ObjectMapper().readValue(request, OnPremisesBilling.class);
+    } catch (JsonProcessingException e) {
+      e.printStackTrace();
+    }
+    RestTemplate restTemplate = new RestTemplate(new HttpComponentsClientHttpRequestFactory());
+    restTemplate.setInterceptors(
+        Collections.singletonList(new RequestResponseLoggingInterceptor()));
+    HttpHeaders httpHeaders = new HttpHeaders();
+    headers.forEach((key, value) -> httpHeaders.add(key, value));
+
+    post(onPremisesBilling.getRevAiApiEndpoint(), request, httpHeaders, restTemplate);
+
+    LOG.info("Responding to billing request...");
+    return ResponseEntity.status(HttpStatus.OK).body(null);
+  }
+
+  private ResponseEntity<String> post(
+      String url, String json, MultiValueMap<String, String> headers, RestTemplate restTemplate) {
+    HttpEntity<String> requestEntity = new HttpEntity<>(json, headers);
+    ResponseEntity<String> responseEntity =
+        restTemplate.exchange(url, HttpMethod.POST, requestEntity, String.class);
+    return responseEntity;
+  }
+
+  private String getMinifiedJson(@RequestBody String request) throws IOException {
+    StringWriter minifiedOutput = new StringWriter();
+
+    JsonFactory factory = new JsonFactory();
+    JsonParser parser = factory.createParser(request);
+    try (JsonGenerator gen = factory.createGenerator(minifiedOutput)) {
+      while (parser.nextToken() != null) {
+        gen.copyCurrentEvent(parser);
+      }
+    }
+    return minifiedOutput.getBuffer().toString();
   }
 }

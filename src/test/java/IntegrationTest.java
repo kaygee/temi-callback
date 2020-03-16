@@ -3,6 +3,7 @@ import callback.beans.ElementType;
 import callback.beans.Job;
 import callback.beans.JobCount;
 import callback.beans.Monologue;
+import callback.beans.OnPremisesBilling;
 import callback.beans.OnPremisesFailure;
 import callback.beans.Transcript;
 import callback.beans.TranscriptCallback;
@@ -22,7 +23,9 @@ import org.slf4j.LoggerFactory;
 
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static io.restassured.RestAssured.given;
 import static io.restassured.config.RedirectConfig.redirectConfig;
@@ -32,7 +35,7 @@ public class IntegrationTest {
 
   private static final Logger LOG = LoggerFactory.getLogger(IntegrationTest.class);
 
-  private static final String LOCALHOST_URL = "http://localhost:8080/";
+  private static final String LOCALHOST_URL = "http://localhost:7331/";
   private static final String JOBS_PATH = "jobs/";
   private static final String JOBS_ALL_PATH = JOBS_PATH + "all";
   private static final String JOBS_COUNT_PATH = JOBS_PATH + "count";
@@ -42,6 +45,7 @@ public class IntegrationTest {
   private static final String JOBS_METADATA_PATH = JOBS_PATH + "{metadata}" + "/metadata";
   private static final String JOBS_METADATA_COUNT_PATH = JOBS_PATH + "{metadata}" + "/count";
   private static final String SUCCESSFUL_REQUEST_PATH = "successful";
+  private static final String BILLING_PATH = "billing";
   private static final String METADATA = "dfaNJDNqFDRg3l3Zzej9O9TpJ";
 
   @Test
@@ -174,6 +178,30 @@ public class IntegrationTest {
             .post(SUCCESSFUL_REQUEST_PATH);
 
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.SC_OK);
+  }
+
+  @Test
+  public void canSendOnPremisesBillingToPath() {
+    OnPremisesBilling onPremisesBilling = new OnPremisesBilling();
+    onPremisesBilling.setBillingIdGuid("TestID");
+    onPremisesBilling.setDuration("123.45");
+    onPremisesBilling.setRevAiApiEndpoint("https://api.rev.ai/external/v1/billing");
+    onPremisesBilling.setUserToken("TestUserToken");
+
+    Map<String, String> headers = new HashMap<>();
+    headers.put("x-rev-signature", "yourmom");
+
+    Response response =
+        given()
+            .spec(getRequestSpecification())
+            .with()
+            .headers(headers)
+            .contentType(ContentType.JSON)
+            .when()
+            .body(onPremisesBilling)
+            .post(BILLING_PATH);
+
+    assertThat(response.getStatusCode()).isEqualTo(200);
   }
 
   private Element getElement(
