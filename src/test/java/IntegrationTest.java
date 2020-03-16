@@ -185,7 +185,7 @@ public class IntegrationTest {
     OnPremisesBilling onPremisesBilling = new OnPremisesBilling();
     onPremisesBilling.setBillingIdGuid("TestID");
     onPremisesBilling.setDuration("123.45");
-    onPremisesBilling.setRevAiApiEndpoint("https://api.rev.ai/external/v1/billing");
+    onPremisesBilling.setRevAiEndpoint("https://api.rev.ai/external/v1/billing");
     onPremisesBilling.setUserToken("TestUserToken");
 
     Map<String, String> headers = new HashMap<>();

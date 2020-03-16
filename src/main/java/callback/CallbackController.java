@@ -19,13 +19,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.BufferingClientHttpRequestFactory;
 import org.springframework.http.client.ClientHttpRequestFactory;
-import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -41,7 +39,6 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
@@ -205,19 +202,14 @@ public class CallbackController {
       method = {POST})
   @ResponseBody
   public ResponseEntity<Object> respondBillingSidecar(
-      @RequestBody String request, @RequestHeader Map<String, String> headers) {
-    LOG.info("Incoming billing request... [" + request + "].");
-    LOG.info("Incoming billing request headers...");
-    headers.forEach(
-        (key, value) -> {
-          LOG.info("Header key [" + key + "], value [" + value + "].");
-        });
+      @RequestBody String request, @RequestHeader MultiValueMap<String, String> headers) {
+    LOG.info("Incoming billing request...");
 
     OnPremisesBilling onPremisesBilling = null;
     try {
       onPremisesBilling = new ObjectMapper().readValue(request, OnPremisesBilling.class);
     } catch (JsonProcessingException e) {
-      e.printStackTrace();
+      // #nomnomnom
     }
 
     ClientHttpRequestFactory factory =
@@ -226,13 +218,14 @@ public class CallbackController {
     RestTemplate restTemplate = new RestTemplate(factory);
     restTemplate.setInterceptors(
         Collections.singletonList(new RequestResponseLoggingInterceptor()));
-    HttpHeaders httpHeaders = new HttpHeaders();
-    headers.forEach((key, value) -> httpHeaders.add(key, value));
 
-    post(onPremisesBilling.getRevAiApiEndpoint(), request, httpHeaders, restTemplate);
+    ResponseEntity<String> responseEntity =
+        post(onPremisesBilling.getRevAiEndpoint(), request, headers, restTemplate);
 
     LOG.info("Responding to billing request...");
-    return ResponseEntity.status(HttpStatus.OK).body(null);
+    return ResponseEntity.status(responseEntity.getStatusCode())
+        .headers(responseEntity.getHeaders())
+        .body(responseEntity.getBody());
   }
 
   private ResponseEntity<String> post(

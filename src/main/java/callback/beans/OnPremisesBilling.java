@@ -4,26 +4,48 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class OnPremisesBilling {
 
-  @JsonProperty("revaiapi_endpoint")
-  String revAiApiEndpoint;
-
   @JsonProperty("duration")
   String duration;
 
-  @JsonProperty("billing_idguid")
-  String billingIdGuid;
+  @JsonProperty("billing_id")
+  String billId;
 
   @JsonProperty("user_token")
   String userToken;
 
+  @JsonProperty("request_sent_on")
+  String requestSentOn;
+
+  @JsonProperty("billing_idguid")
+  String billingIdGuid;
+
+  @JsonProperty("revaiapi_endpoint")
+  String revAiEndpoint;
+
   public OnPremisesBilling() {}
 
-  public String getRevAiApiEndpoint() {
-    return revAiApiEndpoint;
+  public String getRevAiEndpoint() {
+    return revAiEndpoint;
   }
 
-  public void setRevAiApiEndpoint(String revAiApiEndpoint) {
-    this.revAiApiEndpoint = revAiApiEndpoint;
+  public void setRevAiEndpoint(String revAiEndpoint) {
+    this.revAiEndpoint = revAiEndpoint;
+  }
+
+  public String getBillId() {
+    return billId;
+  }
+
+  public void setBillId(String billId) {
+    this.billId = billId;
+  }
+
+  public String getRequestSentOn() {
+    return requestSentOn;
+  }
+
+  public void setRequestSentOn(String requestSentOn) {
+    this.requestSentOn = requestSentOn;
   }
 
   public String getDuration() {
@@ -54,7 +76,7 @@ public class OnPremisesBilling {
   public String toString() {
     return "OnPremisesBilling{"
         + "revAiApiEndpoint='"
-        + revAiApiEndpoint
+        + requestSentOn
         + '\''
         + ", duration='"
         + duration
