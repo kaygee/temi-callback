@@ -1,6 +1,6 @@
 package callback.repository;
 
-import callback.beans.BillingRequest;
+import callback.beans.BillingTransaction;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface BillingRepository extends JpaRepository<BillingRequest, Long> {}
+public interface BillingRepository extends JpaRepository<BillingTransaction, Long> {}

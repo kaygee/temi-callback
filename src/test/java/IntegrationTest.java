@@ -1,4 +1,4 @@
-import callback.beans.BillingRequest;
+import callback.beans.BillingTransaction;
 import callback.beans.Element;
 import callback.beans.ElementType;
 import callback.beans.Job;
@@ -183,7 +183,7 @@ public class IntegrationTest {
   }
 
   @Test
-  public void canSendOnPremisesBillingToPath() {
+  public void canSendOnPremisesBillingToPathAndNotBeAuthenticated() {
     OnPremisesBilling onPremisesBilling = new OnPremisesBilling();
     onPremisesBilling.setBillingIdGuid("TestID");
     onPremisesBilling.setDuration("123.45");
@@ -203,19 +203,19 @@ public class IntegrationTest {
             .body(onPremisesBilling)
             .post(BILLING_PATH);
 
-    assertThat(response.getStatusCode()).isEqualTo(200);
+    assertThat(response.getStatusCode()).isEqualTo(401);
   }
 
   @Test
-  public void canGetBillingRequests() {
-    BillingRequest[] billingRequests =
+  public void canGetBillingTransactions() {
+    BillingTransaction[] billingTransactions =
         given()
             .spec(getRequestSpecification())
             .when()
             .get(BILLING_REQUESTS_PATH)
-            .as(BillingRequest[].class);
-    for (BillingRequest billingRequest : billingRequests) {
-      LOG.info(billingRequest.toString());
+            .as(BillingTransaction[].class);
+    for (BillingTransaction billingTransaction : billingTransactions) {
+      LOG.info(billingTransaction.toString());
     }
   }
 

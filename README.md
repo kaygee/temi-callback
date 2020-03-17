@@ -30,6 +30,10 @@ I use an in-memory database to keep track of all the callback requests I get.
 ## Build and Run Application
 - `mvn clean spring-boot:run`
 
+## Debugging in IntelliJ
+To debug the application locally set your breakpoint, right click the `main` method, and choose `Debug`.
+
+`public static void main(String[] args) {SpringApplication.run(Application.class, args);}` 
 
 ## Methods
 ### Management related
@@ -37,6 +41,9 @@ I use an in-memory database to keep track of all the callback requests I get.
 - `/jobs/count` - Return the count of jobs stored in the database.
 - `/jobs/failed` - Return all the failed jobs.
 - `/jobs/transcribed` - Return all the transcribed jobs.
+- `/billing/jobs` - Return all the requests and responses to the billing path.
+### Pass-through related
+- `/billing` - Passes through to the target endpoint without modifying the contents of the headers or body.
 ### Callback related
 These all assume that the payload complies with https://api.temi.com/api/reference/v1 or https://rev.ai.
 
