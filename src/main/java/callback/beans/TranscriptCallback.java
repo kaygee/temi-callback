@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class TranscriptCallback {
 
   @JsonProperty("transcript")
-  Transcript transcript;
+  String transcript;
 
   @JsonProperty("metadata")
   String metadata;
@@ -18,11 +18,11 @@ public class TranscriptCallback {
     this.metadata = metadata;
   }
 
-  public Transcript getTranscript() {
+  public String getTranscript() {
     return transcript;
   }
 
-  public void setTranscript(Transcript transcript) {
+  public void setTranscript(String transcript) {
     this.transcript = transcript;
   }
 

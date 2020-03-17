@@ -8,6 +8,8 @@ import callback.beans.OnPremisesBilling;
 import callback.beans.OnPremisesFailure;
 import callback.beans.Transcript;
 import callback.beans.TranscriptCallback;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.restassured.RestAssured;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.filter.Filter;
@@ -41,7 +43,7 @@ public class IntegrationTest {
   private static final String JOBS_ALL_PATH = JOBS_PATH + "all";
   private static final String JOBS_COUNT_PATH = JOBS_PATH + "count";
   private static final String JOBS_FAILED_PATH = JOBS_PATH + "failed";
-  private static final String JOBS_TRANSCIBED_PATH = JOBS_PATH + "transcribed";
+  private static final String JOBS_TRANSCRIBED_PATH = JOBS_PATH + "transcribed";
   private static final String JOBS_INITIALIZATION_PATH = JOBS_PATH + "initialization";
   private static final String JOBS_METADATA_PATH = JOBS_PATH + "{metadata}" + "/metadata";
   private static final String JOBS_METADATA_COUNT_PATH = JOBS_PATH + "{metadata}" + "/count";
@@ -90,7 +92,7 @@ public class IntegrationTest {
             .spec(getRequestSpecification())
             .with()
             .when()
-            .get(JOBS_TRANSCIBED_PATH)
+            .get(JOBS_TRANSCRIBED_PATH)
             .as(Job[].class);
     LOG.info("Transcribed jobs...");
     for (Job job : jobs) {
@@ -167,9 +169,17 @@ public class IntegrationTest {
     Transcript transcript = new Transcript();
     transcript.setMonologues(monologues.toArray(new Monologue[monologues.size()]));
 
+    ObjectMapper mapper = new ObjectMapper();
+    String transcriptString;
+    try {
+      transcriptString = mapper.writeValueAsString(transcript);
+    } catch (JsonProcessingException e) {
+      throw new RuntimeException("Could not write Transcript.class to String");
+    }
+
     TranscriptCallback transcriptCallback = new TranscriptCallback();
     transcriptCallback.setMetadata(METADATA);
-    transcriptCallback.setTranscript(transcript);
+    transcriptCallback.setTranscript(transcriptString);
 
     Response response =
         given()
