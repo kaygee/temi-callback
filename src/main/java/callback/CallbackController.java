@@ -168,7 +168,10 @@ public class CallbackController {
         job.setFailureDetail(onPremisesFailure.getFailureDetail());
         job.setMetadata(onPremisesFailure.getMetadata());
         job.setJobType(JobType.FAILED.toString());
-      } else if (request.contains("transcript")) {
+      } else if (request.contains("transcript")
+          || request.contains("captions_vtt")
+          || request.contains("transcript_text")
+          || request.contains("captions_srt")) {
         TranscriptCallback transcriptCallback =
             new ObjectMapper().readValue(request, TranscriptCallback.class);
         job.setMetadata(transcriptCallback.getMetadata());

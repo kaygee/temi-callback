@@ -1,10 +1,11 @@
 package callback.beans;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class TranscriptCallback {
 
-  @JsonProperty("transcript")
+  @JsonAlias({"transcript", "transcript_text", "captions_srt", "captions_vtt"})
   String transcript;
 
   @JsonProperty("metadata")
