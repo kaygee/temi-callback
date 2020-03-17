@@ -1,3 +1,4 @@
+import callback.beans.BillingRequest;
 import callback.beans.Element;
 import callback.beans.ElementType;
 import callback.beans.Job;
@@ -46,6 +47,7 @@ public class IntegrationTest {
   private static final String JOBS_METADATA_COUNT_PATH = JOBS_PATH + "{metadata}" + "/count";
   private static final String SUCCESSFUL_REQUEST_PATH = "successful";
   private static final String BILLING_PATH = "billing";
+  private static final String BILLING_REQUESTS_PATH = BILLING_PATH + "/all";
   private static final String METADATA = "dfaNJDNqFDRg3l3Zzej9O9TpJ";
 
   @Test
@@ -202,6 +204,19 @@ public class IntegrationTest {
             .post(BILLING_PATH);
 
     assertThat(response.getStatusCode()).isEqualTo(200);
+  }
+
+  @Test
+  public void canGetBillingRequests() {
+    BillingRequest[] billingRequests =
+        given()
+            .spec(getRequestSpecification())
+            .when()
+            .get(BILLING_REQUESTS_PATH)
+            .as(BillingRequest[].class);
+    for (BillingRequest billingRequest : billingRequests) {
+      LOG.info(billingRequest.toString());
+    }
   }
 
   private Element getElement(

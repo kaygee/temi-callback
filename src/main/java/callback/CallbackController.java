@@ -1,5 +1,7 @@
 package callback;
 
+import callback.beans.BillingRequest;
+import callback.beans.BillingType;
 import callback.beans.InitializationStatus;
 import callback.beans.Job;
 import callback.beans.JobCount;
@@ -9,6 +11,7 @@ import callback.beans.OnPremisesFailure;
 import callback.beans.TranscriptCallback;
 import callback.exception.JobNotFoundException;
 import callback.logger.RequestResponseLoggingInterceptor;
+import callback.repository.BillingRepository;
 import callback.repository.JobRepository;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
@@ -49,6 +52,7 @@ public class CallbackController {
   private static final Logger LOG = LoggerFactory.getLogger(CallbackController.class);
 
   @Autowired JobRepository jobRepository;
+  @Autowired BillingRepository billingRepository;
 
   @GetMapping(
       value = "/health",
@@ -152,7 +156,7 @@ public class CallbackController {
       method = {GET, POST})
   @ResponseBody
   public ResponseEntity<Object> respondSuccessful(@RequestBody String request) {
-    LOG.info("Incoming request... [" + request + "].");
+    LOG.info("Incoming callback request... [" + request + "].");
     Job job = new Job();
     try {
       if (request.contains("failure") && request.contains("metadata")) {
@@ -193,8 +197,16 @@ public class CallbackController {
     } catch (IOException e) {
       e.printStackTrace();
     }
-    LOG.info("Responding to request...");
+    LOG.info("Responding to callback request...");
     return ResponseEntity.status(HttpStatus.OK).body(null);
+  }
+
+  @GetMapping(
+      value = "/billing/all",
+      produces = {"application/json"})
+  public List<BillingRequest> getBillingRequests() {
+    LOG.info("Returning all billing requests.");
+    return billingRepository.findAll();
   }
 
   @RequestMapping(
@@ -203,7 +215,7 @@ public class CallbackController {
   @ResponseBody
   public ResponseEntity<Object> respondBillingSidecar(
       @RequestBody String request, @RequestHeader MultiValueMap<String, String> headers) {
-    LOG.info("Incoming billing request...");
+    LOG.info("Incoming billing request... [" + request + "]");
 
     OnPremisesBilling onPremisesBilling = null;
     try {
@@ -211,6 +223,11 @@ public class CallbackController {
     } catch (JsonProcessingException e) {
       // #nomnomnom
     }
+    BillingRequest billingRequestReceived = new BillingRequest();
+    billingRequestReceived.setBillingType(BillingType.BILLING_REQUEST_RECEIVED.toString());
+    billingRequestReceived.setRawData(request);
+    billingRequestReceived.setHeaders(headers.toSingleValueMap().toString());
+    billingRepository.save(billingRequestReceived);
 
     ClientHttpRequestFactory factory =
         new BufferingClientHttpRequestFactory(new SimpleClientHttpRequestFactory());
@@ -219,10 +236,23 @@ public class CallbackController {
     restTemplate.setInterceptors(
         Collections.singletonList(new RequestResponseLoggingInterceptor()));
 
+    //    BillingRequest billingRequestSent = new BillingRequest();
+    //    billingRequestReceived.setBillingType(BillingType.BILLING_REQUEST_SENT.toString());
+    //    billingRequestReceived.setRawData(request);
+    //    billingRequestReceived.setHeaders(headers.toSingleValueMap().toString());
+    //    billingRepository.save(billingRequestSent);
+
     ResponseEntity<String> responseEntity =
         post(onPremisesBilling.getRevAiEndpoint(), request, headers, restTemplate);
 
-    LOG.info("Responding to billing request...");
+    //    BillingRequest billingResponseReceived = new BillingRequest();
+    //    billingResponseReceived.setBillingType(BillingType.BILLING_RESPONSE_RECEIVED.toString());
+    //    billingResponseReceived.setRawData(responseEntity.toString());
+    //
+    // billingResponseReceived.setHeaders(responseEntity.getHeaders().toSingleValueMap().toString());
+    //    billingRepository.save(billingResponseReceived);
+
+    LOG.info("Response to billing request... [" + responseEntity.toString() + "].");
     return ResponseEntity.status(responseEntity.getStatusCode())
         .headers(responseEntity.getHeaders())
         .body(responseEntity.getBody());
