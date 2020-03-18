@@ -2,6 +2,8 @@ package callback.beans;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class TranscriptCallback {
 
@@ -23,8 +25,13 @@ public class TranscriptCallback {
     return transcript;
   }
 
-  public void setTranscript(String transcript) {
-    this.transcript = transcript;
+  public void setTranscript(Object transcript) {
+    ObjectMapper mapper = new ObjectMapper();
+    try {
+      this.transcript = mapper.writeValueAsString(transcript);
+    } catch (JsonProcessingException e) {
+      e.printStackTrace();
+    }
   }
 
   @Override
