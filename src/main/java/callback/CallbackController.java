@@ -230,7 +230,7 @@ public class CallbackController {
             .setRequestBody(request)
             .setResponseHttpStatus(responseEntity.getStatusCodeValue())
             .setResponseHeaders(responseEntity.getHeaders().toSingleValueMap().toString())
-            .setResponseBody(responseEntity.toString())
+            .setResponseBody(responseEntity.getBody())
             .build();
     billingRepository.save(billingTransaction);
 
