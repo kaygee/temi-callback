@@ -157,8 +157,14 @@ public class CallbackController {
       value = "/jobs/successful",
       method = {GET, POST})
   @ResponseBody
-  public ResponseEntity<Object> respondSuccessful(@RequestBody String request) {
-    LOG.debug("Incoming callback request... [" + request + "].");
+  public ResponseEntity<Object> respondSuccessful(
+      @RequestBody String request, @RequestHeader MultiValueMap<String, String> headers) {
+    LOG.info("Incoming callback request... [" + request + "].");
+    LOG.info("Incoming callback headers.");
+    for (String key : headers.keySet()) {
+      LOG.info("Key: " + key + ", Value: " + headers.get(key));
+    }
+
     Job job = new Job();
     try {
       if (request.contains("failure") && request.contains("metadata")) {
