@@ -47,7 +47,7 @@ public class IntegrationTest {
   private static final String JOBS_INITIALIZATION_PATH = JOBS_PATH + "initialization";
   private static final String JOBS_METADATA_PATH = JOBS_PATH + "{metadata}" + "/metadata";
   private static final String JOBS_METADATA_COUNT_PATH = JOBS_PATH + "{metadata}" + "/count";
-  private static final String SUCCESSFUL_REQUEST_PATH = "successful";
+  private static final String SUCCESSFUL_REQUEST_PATH = JOBS_PATH + "successful";
   private static final String BILLING_PATH = "billing";
   private static final String BILLING_REQUESTS_PATH = BILLING_PATH + "/all";
   private static final String METADATA = "dfaNJDNqFDRg3l3Zzej9O9TpJ";
