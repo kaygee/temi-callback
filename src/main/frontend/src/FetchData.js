@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import './FetchData.css'
 
-export default class App extends Component {
+export default class FetchData extends Component {
     constructor(props) {
         super(props);
         this.state =
@@ -14,8 +14,8 @@ export default class App extends Component {
 
     componentDidMount() {
         // fetch('http://qa-ci.internal.rev.com:7331/jobs/all')
-        // fetch('http://localhost:7331/jobs/all')
-        fetch('https://jsonplaceholder.typicode.com/users/')
+        fetch('http://localhost:7331/jobs/all')
+            // fetch('https://jsonplaceholder.typicode.com/users/')
             .then(res => res.json())
             .then((result) => {
                 this.setState({
@@ -37,7 +37,7 @@ export default class App extends Component {
     render() {
         const { error, isLoaded, searchResults } = this.state;
         if (error) {
-            return <div>Error: {error.message}</div>;
+            return <div>Error: {error.message} - Install CORS</div>;
         } else if (!isLoaded) {
             return <div>Loading...</div>;
         } else if (searchResults.length === 0) {
@@ -45,7 +45,7 @@ export default class App extends Component {
         } else {
             return (
                 <div className="App" >
-                    <h1>ReactJS + Spring Data REST </h1>
+                    <h1>ReactJS + Spring Data REST</h1>
                     <h2>Fetch a list from an API and display it</h2>
                     < div className="datas" >
                         {searchResults.map((data, index) => {
