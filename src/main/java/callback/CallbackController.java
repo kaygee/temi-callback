@@ -253,6 +253,16 @@ public class CallbackController {
       // #nomnomnom
     }
 
+    onPremisesBilling.setDuration("1");
+
+    String modifiedRequestBody = null;
+
+    try {
+      modifiedRequestBody = new ObjectMapper().writeValueAsString(onPremisesBilling);
+    } catch (JsonProcessingException e) {
+      e.printStackTrace();
+    }
+
     ClientHttpRequestFactory factory =
             new BufferingClientHttpRequestFactory(new HttpComponentsClientHttpRequestFactory());
 
@@ -261,30 +271,21 @@ public class CallbackController {
     setLoggingInterceptor(restTemplate);
 
     ResponseEntity<String> responseEntity =
-            post(onPremisesBilling.getRevAiEndpoint(), request, headers, restTemplate);
+            post(onPremisesBilling.getRevAiEndpoint(), modifiedRequestBody, headers, restTemplate);
 
     BillingTransaction billingTransaction =
             new BillingTransactionBuilder.Builder()
                     .setRequestHeaders(headers.toSingleValueMap().toString())
-                    .setRequestBody(request)
+                    .setRequestBody(modifiedRequestBody)
                     .setResponseHttpStatus(responseEntity.getStatusCodeValue())
                     .setResponseHeaders(responseEntity.getHeaders().toSingleValueMap().toString())
                     .setResponseBody(responseEntity.getBody())
                     .build();
     billingRepository.save(billingTransaction);
 
-    ObjectNode modifiedRequestBody = null;
-    try {
-      modifiedRequestBody = new ObjectMapper().readValue(responseEntity.getBody(), ObjectNode.class);
-    } catch (JsonProcessingException e) {
-      e.printStackTrace();
-    }
-
-    modifiedRequestBody.put("duration", 1);
-
     return ResponseEntity.status(responseEntity.getStatusCode())
             .headers(responseEntity.getHeaders())
-            .body(modifiedRequestBody);
+            .body(responseEntity.getBody());
   }
 
   private void setLoggingInterceptor(RestTemplate restTemplate) {
