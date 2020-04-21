@@ -282,6 +282,8 @@ public class CallbackController {
         .setResponseHeaders(responseEntity.getHeaders().toSingleValueMap().toString());
     if (responseEntity.getBody() != null) {
       billingTransactionBuilder.setResponseBody(responseEntity.getBody());
+    } else {
+      billingTransactionBuilder.setResponseBody("");
     }
     BillingTransaction billingTransaction = billingTransactionBuilder.build();
     billingRepository.save(billingTransaction);
