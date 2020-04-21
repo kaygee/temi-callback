@@ -18,6 +18,7 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -237,6 +238,53 @@ public class CallbackController {
     return ResponseEntity.status(responseEntity.getStatusCode())
         .headers(responseEntity.getHeaders())
         .body(responseEntity.getBody());
+  }
+
+  @RequestMapping(
+          value = "/billing/modify",
+          method = {POST})
+  @ResponseBody
+  public ResponseEntity<Object> modifyBillingRequestAndForward(
+          @RequestBody String request, @RequestHeader MultiValueMap<String, String> headers) {
+    OnPremisesBilling onPremisesBilling = null;
+    try {
+      onPremisesBilling = new ObjectMapper().readValue(request, OnPremisesBilling.class);
+    } catch (JsonProcessingException e) {
+      // #nomnomnom
+    }
+
+    ClientHttpRequestFactory factory =
+            new BufferingClientHttpRequestFactory(new HttpComponentsClientHttpRequestFactory());
+
+    RestTemplate restTemplate = new RestTemplate(factory);
+    setErrorHandler(restTemplate);
+    setLoggingInterceptor(restTemplate);
+
+    ResponseEntity<String> responseEntity =
+            post(onPremisesBilling.getRevAiEndpoint(), request, headers, restTemplate);
+
+    BillingTransaction billingTransaction =
+            new BillingTransactionBuilder.Builder()
+                    .setRequestHeaders(headers.toSingleValueMap().toString())
+                    .setRequestBody(request)
+                    .setResponseHttpStatus(responseEntity.getStatusCodeValue())
+                    .setResponseHeaders(responseEntity.getHeaders().toSingleValueMap().toString())
+                    .setResponseBody(responseEntity.getBody())
+                    .build();
+    billingRepository.save(billingTransaction);
+
+    ObjectNode modifiedRequestBody = null;
+    try {
+      modifiedRequestBody = new ObjectMapper().readValue(responseEntity.getBody(), ObjectNode.class);
+    } catch (JsonProcessingException e) {
+      e.printStackTrace();
+    }
+
+    modifiedRequestBody.put("duration", 1);
+
+    return ResponseEntity.status(responseEntity.getStatusCode())
+            .headers(responseEntity.getHeaders())
+            .body(modifiedRequestBody);
   }
 
   private void setLoggingInterceptor(RestTemplate restTemplate) {
