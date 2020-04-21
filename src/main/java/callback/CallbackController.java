@@ -239,6 +239,60 @@ public class CallbackController {
         .body(responseEntity.getBody());
   }
 
+  @RequestMapping(
+      value = "/billing/modify",
+      method = {POST})
+  @ResponseBody
+  public ResponseEntity<Object> modifyBillingRequestAndForward(
+      @RequestBody String request, @RequestHeader MultiValueMap<String, String> headers) {
+    OnPremisesBilling onPremisesBilling = null;
+    try {
+      onPremisesBilling = new ObjectMapper().readValue(request, OnPremisesBilling.class);
+    } catch (JsonProcessingException e) {
+      // #nomnomnom
+    }
+
+    onPremisesBilling.setDuration("1");
+
+    String modifiedRequestBody = null;
+
+    try {
+      modifiedRequestBody = new ObjectMapper().writeValueAsString(onPremisesBilling);
+    } catch (JsonProcessingException e) {
+      e.printStackTrace();
+    }
+
+    ClientHttpRequestFactory factory =
+        new BufferingClientHttpRequestFactory(new HttpComponentsClientHttpRequestFactory());
+
+    RestTemplate restTemplate = new RestTemplate(factory);
+    setErrorHandler(restTemplate);
+    setLoggingInterceptor(restTemplate);
+
+    ResponseEntity<String> responseEntity =
+        post(onPremisesBilling.getRevAiEndpoint(), modifiedRequestBody, headers, restTemplate);
+
+    BillingTransactionBuilder.Builder billingTransactionBuilder =
+        new BillingTransactionBuilder.Builder();
+
+    billingTransactionBuilder
+        .setRequestHeaders(headers.toSingleValueMap().toString())
+        .setRequestBody(modifiedRequestBody)
+        .setResponseHttpStatus(responseEntity.getStatusCodeValue())
+        .setResponseHeaders(responseEntity.getHeaders().toSingleValueMap().toString());
+    if (responseEntity.getBody() != null) {
+      billingTransactionBuilder.setResponseBody(responseEntity.getBody());
+    } else {
+      billingTransactionBuilder.setResponseBody("");
+    }
+    BillingTransaction billingTransaction = billingTransactionBuilder.build();
+    billingRepository.save(billingTransaction);
+
+    return ResponseEntity.status(responseEntity.getStatusCode())
+        .headers(responseEntity.getHeaders())
+        .body(responseEntity.getBody());
+  }
+
   private void setLoggingInterceptor(RestTemplate restTemplate) {
     restTemplate.setInterceptors(
         Collections.singletonList(new RequestResponseLoggingInterceptor()));
