@@ -22,6 +22,9 @@ public class OnPremisesBilling {
   @JsonProperty("revaiapi_endpoint")
   String revAiEndpoint;
 
+  @JsonProperty("metadata")
+  String metadata;
+
   public OnPremisesBilling() {}
 
   public String getRevAiEndpoint() {
@@ -72,21 +75,24 @@ public class OnPremisesBilling {
     this.userToken = userToken;
   }
 
+  public String getMetadata() {
+    return metadata;
+  }
+
+  public void setMetadata(String metadata) {
+    this.metadata = metadata;
+  }
+
   @Override
   public String toString() {
-    return "OnPremisesBilling{"
-        + "revAiApiEndpoint='"
-        + requestSentOn
-        + '\''
-        + ", duration='"
-        + duration
-        + '\''
-        + ", billingIdGuid='"
-        + billingIdGuid
-        + '\''
-        + ", userToken='"
-        + userToken
-        + '\''
-        + '}';
+    return "OnPremisesBilling{" +
+            "duration='" + duration + '\'' +
+            ", billId='" + billId + '\'' +
+            ", userToken='" + userToken + '\'' +
+            ", requestSentOn='" + requestSentOn + '\'' +
+            ", billingIdGuid='" + billingIdGuid + '\'' +
+            ", revAiEndpoint='" + revAiEndpoint + '\'' +
+            ", metadata='" + metadata + '\'' +
+            '}';
   }
 }
