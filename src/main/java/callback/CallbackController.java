@@ -4,13 +4,8 @@ import callback.beans.Cookies;
 import callback.beans.InitializationStatus;
 import callback.exception.CookiesNotFoundException;
 import callback.repository.CookiesRepository;
-import com.fasterxml.jackson.core.JsonFactory;
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,16 +16,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.io.IOException;
-import java.io.StringWriter;
 import java.util.Optional;
 
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 @RestController
 public class CallbackController {
-
-  private static final Logger LOG = LoggerFactory.getLogger(CallbackController.class);
 
   @Autowired CookiesRepository cookieRepository;
 
@@ -64,24 +55,14 @@ public class CallbackController {
       value = "/cookies",
       method = {POST})
   @ResponseBody
-  public ResponseEntity<Object> saveCookies(@RequestBody String request) {
-    LOG.debug("Save cookies request received... [" + request + "].");
-    Cookies cookies = new Cookies();
-    cookieRepository.save(cookies);
-    LOG.info("Responding to save cookies request...");
-    return ResponseEntity.status(HttpStatus.OK).body(null);
-  }
-
-  private String getMinifiedJson(@RequestBody String request) throws IOException {
-    StringWriter minifiedOutput = new StringWriter();
-
-    JsonFactory factory = new JsonFactory();
-    JsonParser parser = factory.createParser(request);
-    try (JsonGenerator gen = factory.createGenerator(minifiedOutput)) {
-      while (parser.nextToken() != null) {
-        gen.copyCurrentEvent(parser);
-      }
+  public ResponseEntity<Object> postCookies(@RequestBody String request) {
+    Cookies cookies;
+    try {
+      cookies = new ObjectMapper().readValue(request, Cookies.class);
+    } catch (JsonProcessingException e) {
+      throw new IllegalArgumentException(e.getMessage());
     }
-    return minifiedOutput.getBuffer().toString();
+    cookieRepository.save(cookies);
+    return ResponseEntity.status(HttpStatus.CREATED).body(null);
   }
 }

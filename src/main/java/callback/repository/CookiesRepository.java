@@ -11,4 +11,6 @@ public interface CookiesRepository extends JpaRepository<Cookies, Long> {
   // This is HQL NOT SQL.
   @Query("FROM Cookies WHERE role = :role AND environment = :environment")
   Optional<Cookies> findCookies(String role, String environment);
+
+
 }
