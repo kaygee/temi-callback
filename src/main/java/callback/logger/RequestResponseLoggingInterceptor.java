@@ -15,8 +15,6 @@ public class RequestResponseLoggingInterceptor implements ClientHttpRequestInter
 
   private final Logger log = LoggerFactory.getLogger(this.getClass());
 
-  //  @Autowired BillingRepository billingRepository;
-
   @Override
   public ClientHttpResponse intercept(
       HttpRequest request, byte[] body, ClientHttpRequestExecution execution) throws IOException {
