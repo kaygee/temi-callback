@@ -45,23 +45,35 @@ public class CookiesRepositoryTest {
 
   @Test
   public void canPostAndGetCookies() {
-    String role = RandomStringUtils.randomAlphabetic(10);
-    String environment = RandomStringUtils.randomAlphabetic(10);
+    String role = RandomStringUtils.randomAlphabetic(30);
+    String environment = RandomStringUtils.randomAlphabetic(30);
+    String username = RandomStringUtils.randomAlphabetic(30);
+    String rawData = RandomStringUtils.randomAlphabetic(50);
 
-    Cookies cookies = new Cookies();
-    cookies.setEnvironment(environment);
-    cookies.setRole(role);
-    cookies.setUsername("cow@moo.com");
-    cookies.setRawData(RandomStringUtils.randomAlphabetic(50));
+    Cookies postCookies = new Cookies();
+    postCookies.setEnvironment(environment);
+    postCookies.setRole(role);
+    postCookies.setUsername(username);
+    postCookies.setRawData(rawData);
 
     Response postResponse =
-        given().spec(getRequestSpecification()).when().body(cookies).post(COOKIES_PATH).andReturn();
+        given()
+            .spec(getRequestSpecification())
+            .when()
+            .body(postCookies)
+            .post(COOKIES_PATH)
+            .andReturn();
     assertThat(postResponse.getStatusCode()).isEqualTo(HttpStatus.SC_CREATED);
 
     String getPath =
         FIND_COOKIES_PATH.replace("{role}", role).replace("{environment}", environment);
     Response getResponse = given().spec(getRequestSpecification()).when().get(getPath).andReturn();
     assertThat(getResponse.getStatusCode()).isEqualTo(HttpStatus.SC_OK);
+    Cookies getCookies = getResponse.as(Cookies.class);
+    assertThat(getCookies.getEnvironment()).isEqualTo(environment);
+    assertThat(getCookies.getRole()).isEqualTo(role);
+    assertThat(getCookies.getUsername()).isEqualTo(username);
+    assertThat(getCookies.getRawData()).isEqualTo(rawData);
   }
 
   private URL getUrl() {
