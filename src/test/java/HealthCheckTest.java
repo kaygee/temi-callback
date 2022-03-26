@@ -6,7 +6,6 @@ import io.restassured.filter.log.ErrorLoggingFilter;
 import io.restassured.filter.log.RequestLoggingFilter;
 import io.restassured.filter.log.ResponseLoggingFilter;
 import io.restassured.http.ContentType;
-import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 import org.apache.http.HttpStatus;
 import org.junit.Test;
@@ -26,10 +25,10 @@ public class HealthCheckTest {
 
   @Test
   public void canCheckHealth() {
-    Response response =
+    var response =
         given().spec(getRequestSpecification()).when().get(HEALTH_CHECK_PATH).andReturn();
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.SC_OK);
-    InitializationStatus initializationStatus = response.as(InitializationStatus.class);
+    var initializationStatus = response.as(InitializationStatus.class);
     assertThat(initializationStatus.getSuccess()).isTrue();
   }
 
@@ -42,7 +41,7 @@ public class HealthCheckTest {
   }
 
   private RequestSpecification getRequestSpecification() {
-    RequestSpecBuilder requestSpecBuilder = new RequestSpecBuilder();
+    var requestSpecBuilder = new RequestSpecBuilder();
     requestSpecBuilder.setBaseUri(
         getUrl().getProtocol() + "://" + getUrl().getHost() + ":" + getUrl().getPort());
     requestSpecBuilder.setConfig(

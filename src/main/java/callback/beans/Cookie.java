@@ -3,14 +3,15 @@ package callback.beans;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Objects;
 
 public class Cookie implements Serializable {
 
-  // TODO: Generate a real one.
-  private static final long serialVersionUID = 1L;
+  @Serial
+  private static final long serialVersionUID = 5598788231238000275L;
 
   @JsonProperty("name")
   private final String name;

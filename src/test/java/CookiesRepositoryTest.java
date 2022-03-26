@@ -7,7 +7,6 @@ import io.restassured.filter.log.ErrorLoggingFilter;
 import io.restassured.filter.log.RequestLoggingFilter;
 import io.restassured.filter.log.ResponseLoggingFilter;
 import io.restassured.http.ContentType;
-import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.http.HttpStatus;
@@ -34,24 +33,22 @@ public class CookiesRepositoryTest {
 
   @Test
   public void canReturnMethodNotAllowed() {
-    Response response =
-        given().spec(getRequestSpecification()).when().get(COOKIES_PATH).andReturn();
+    var response = given().spec(getRequestSpecification()).when().get(COOKIES_PATH).andReturn();
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.SC_METHOD_NOT_ALLOWED);
   }
 
   @Test
   public void canReturnNotFound() {
-    String path =
-        GET_COOKIES_PATH.replace("{role}", "role").replace("{environment}", "environment");
-    Response response = given().spec(getRequestSpecification()).when().get(path).andReturn();
+    var path = GET_COOKIES_PATH.replace("{role}", "role").replace("{environment}", "environment");
+    var response = given().spec(getRequestSpecification()).when().get(path).andReturn();
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.SC_NOT_FOUND);
   }
 
   @Test
   public void canPostAndGetCookies() {
-    String role = RandomStringUtils.randomAlphabetic(30);
-    String environment = RandomStringUtils.randomAlphabetic(30);
-    String username = RandomStringUtils.randomAlphabetic(30);
+    var role = RandomStringUtils.randomAlphabetic(30);
+    var environment = RandomStringUtils.randomAlphabetic(30);
+    var username = RandomStringUtils.randomAlphabetic(30);
 
     Cookies postCookies = new Cookies();
     postCookies.setEnvironment(environment);
@@ -59,11 +56,11 @@ public class CookiesRepositoryTest {
     postCookies.setUsername(username);
 
     Set<Cookie> cookies = new HashSet<>();
-    Cookie cookie = new Cookie("name", "value", "domain", "path", new Date(), true, true, "same");
+    var cookie = new Cookie("name", "value", "domain", "path", new Date(), true, true, "same");
     cookies.add(cookie);
     postCookies.setCookies(cookies);
 
-    Response postResponse =
+    var postResponse =
         given()
             .spec(getRequestSpecification())
             .when()
@@ -72,8 +69,8 @@ public class CookiesRepositoryTest {
             .andReturn();
     assertThat(postResponse.getStatusCode()).isEqualTo(HttpStatus.SC_CREATED);
 
-    String getPath = GET_COOKIES_PATH.replace("{role}", role).replace("{environment}", environment);
-    Response getResponse = given().spec(getRequestSpecification()).when().get(getPath).andReturn();
+    var getPath = GET_COOKIES_PATH.replace("{role}", role).replace("{environment}", environment);
+    var getResponse = given().spec(getRequestSpecification()).when().get(getPath).andReturn();
     assertThat(getResponse.getStatusCode()).isEqualTo(HttpStatus.SC_OK);
     Cookies getCookies = getResponse.as(Cookies.class);
     assertThat(getCookies.getEnvironment()).isEqualTo(environment);
@@ -91,7 +88,7 @@ public class CookiesRepositoryTest {
   }
 
   private RequestSpecification getRequestSpecification() {
-    RequestSpecBuilder requestSpecBuilder = new RequestSpecBuilder();
+    var requestSpecBuilder = new RequestSpecBuilder();
     requestSpecBuilder.setBaseUri(
         getUrl().getProtocol() + "://" + getUrl().getHost() + ":" + getUrl().getPort());
     requestSpecBuilder.setConfig(
