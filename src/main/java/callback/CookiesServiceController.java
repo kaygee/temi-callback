@@ -21,7 +21,7 @@ import java.util.Optional;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 @RestController
-public class CallbackController {
+public class CookiesServiceController {
 
   @Autowired CookiesRepository cookieRepository;
 

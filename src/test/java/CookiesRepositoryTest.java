@@ -1,3 +1,4 @@
+import callback.beans.Cookie;
 import callback.beans.Cookies;
 import io.restassured.RestAssured;
 import io.restassured.builder.RequestSpecBuilder;
@@ -14,7 +15,10 @@ import org.junit.Test;
 
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static io.restassured.RestAssured.given;
 import static io.restassured.config.RedirectConfig.redirectConfig;
@@ -26,7 +30,7 @@ public class CookiesRepositoryTest {
   private static final String COOKIES_PATH = "cookies/";
   private static final String ROLE_PATH = "{role}/";
   private static final String ENVIRONMENT_PATH = "{environment}";
-  private static final String FIND_COOKIES_PATH = COOKIES_PATH + ROLE_PATH + ENVIRONMENT_PATH;
+  private static final String GET_COOKIES_PATH = COOKIES_PATH + ROLE_PATH + ENVIRONMENT_PATH;
 
   @Test
   public void canReturnMethodNotAllowed() {
@@ -38,7 +42,7 @@ public class CookiesRepositoryTest {
   @Test
   public void canReturnNotFound() {
     String path =
-        FIND_COOKIES_PATH.replace("{role}", "role").replace("{environment}", "environment");
+        GET_COOKIES_PATH.replace("{role}", "role").replace("{environment}", "environment");
     Response response = given().spec(getRequestSpecification()).when().get(path).andReturn();
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.SC_NOT_FOUND);
   }
@@ -48,13 +52,16 @@ public class CookiesRepositoryTest {
     String role = RandomStringUtils.randomAlphabetic(30);
     String environment = RandomStringUtils.randomAlphabetic(30);
     String username = RandomStringUtils.randomAlphabetic(30);
-    String rawData = RandomStringUtils.randomAlphabetic(50);
 
     Cookies postCookies = new Cookies();
     postCookies.setEnvironment(environment);
     postCookies.setRole(role);
     postCookies.setUsername(username);
-    postCookies.setRawData(rawData);
+
+    Set<Cookie> cookies = new HashSet<>();
+    Cookie cookie = new Cookie("name", "value", "domain", "path", new Date(), true, true, "same");
+    cookies.add(cookie);
+    postCookies.setCookies(cookies);
 
     Response postResponse =
         given()
@@ -65,15 +72,14 @@ public class CookiesRepositoryTest {
             .andReturn();
     assertThat(postResponse.getStatusCode()).isEqualTo(HttpStatus.SC_CREATED);
 
-    String getPath =
-        FIND_COOKIES_PATH.replace("{role}", role).replace("{environment}", environment);
+    String getPath = GET_COOKIES_PATH.replace("{role}", role).replace("{environment}", environment);
     Response getResponse = given().spec(getRequestSpecification()).when().get(getPath).andReturn();
     assertThat(getResponse.getStatusCode()).isEqualTo(HttpStatus.SC_OK);
     Cookies getCookies = getResponse.as(Cookies.class);
     assertThat(getCookies.getEnvironment()).isEqualTo(environment);
     assertThat(getCookies.getRole()).isEqualTo(role);
     assertThat(getCookies.getUsername()).isEqualTo(username);
-    assertThat(getCookies.getRawData()).isEqualTo(rawData);
+    assertThat(getCookies.getCookies()).isEqualTo(cookies);
   }
 
   private URL getUrl() {
