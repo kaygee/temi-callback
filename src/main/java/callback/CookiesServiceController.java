@@ -6,6 +6,8 @@ import callback.exception.CookiesNotFoundException;
 import callback.repository.CookiesRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,11 +25,13 @@ import static org.springframework.web.bind.annotation.RequestMethod.POST;
 @RestController
 public class CookiesServiceController {
 
+  private static final Logger LOG = LoggerFactory.getLogger(CookiesServiceController.class);
+
   @Autowired CookiesRepository cookieRepository;
 
   @GetMapping(
-          value = "/health",
-          produces = {"application/json"})
+      value = "/health",
+      produces = {"application/json"})
   public String healthCheck() {
     InitializationStatus status = new InitializationStatus();
     status.setSuccess(true);
@@ -39,13 +43,14 @@ public class CookiesServiceController {
   }
 
   @GetMapping(
-          value = "/cookies/{role}/{environment}/exists",
-          produces = {"application/json"})
+      value = "/cookies/{role}/{environment}/exists",
+      produces = {"application/json"})
   public ResponseEntity<?> hasCookies(
-          @PathVariable(value = "role") String role,
-          @PathVariable(value = "environment") String environment) {
+      @PathVariable(value = "role") String role,
+      @PathVariable(value = "environment") String environment) {
+    LOG.info("Exists request for [" + role + "] in [" + environment + "].");
     Optional<CookiesForRoleAndEnvironment> cookies =
-            cookieRepository.findCookies(role, environment);
+        cookieRepository.findCookies(role, environment);
     if (cookies.isPresent()) {
       return ResponseEntity.status(HttpStatus.OK).body(null);
     }
@@ -53,13 +58,14 @@ public class CookiesServiceController {
   }
 
   @GetMapping(
-          value = "/cookies/{role}/{environment}",
-          produces = {"application/json"})
+      value = "/cookies/{role}/{environment}",
+      produces = {"application/json"})
   public CookiesForRoleAndEnvironment getCookies(
-          @PathVariable(value = "role") String role,
-          @PathVariable(value = "environment") String environment) {
+      @PathVariable(value = "role") String role,
+      @PathVariable(value = "environment") String environment) {
+    LOG.info("Get request for [" + role + "] in [" + environment + "].");
     Optional<CookiesForRoleAndEnvironment> cookies =
-            cookieRepository.findCookies(role, environment);
+        cookieRepository.findCookies(role, environment);
     if (cookies.isPresent()) {
       return cookies.get();
     }
@@ -67,8 +73,8 @@ public class CookiesServiceController {
   }
 
   @RequestMapping(
-          value = "/cookies",
-          method = {POST})
+      value = "/cookies",
+      method = {POST})
   @ResponseBody
   public ResponseEntity<Object> postCookies(@RequestBody String request) {
     CookiesForRoleAndEnvironment cookies;
@@ -77,6 +83,8 @@ public class CookiesServiceController {
     } catch (JsonProcessingException e) {
       throw new IllegalArgumentException(e.getMessage());
     }
+    LOG.info(
+        "Saving cookies for [" + cookies.getRole() + "] in [" + cookies.getEnvironment() + "].");
     cookieRepository.save(cookies);
     return ResponseEntity.status(HttpStatus.CREATED).body(null);
   }
