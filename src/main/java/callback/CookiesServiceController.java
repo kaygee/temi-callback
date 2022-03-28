@@ -26,8 +26,8 @@ public class CookiesServiceController {
   @Autowired CookiesRepository cookieRepository;
 
   @GetMapping(
-      value = "/health",
-      produces = {"application/json"})
+          value = "/health",
+          produces = {"application/json"})
   public String healthCheck() {
     InitializationStatus status = new InitializationStatus();
     status.setSuccess(true);
@@ -39,12 +39,27 @@ public class CookiesServiceController {
   }
 
   @GetMapping(
-      value = "/cookies/{role}/{environment}",
-      produces = {"application/json"})
+          value = "/cookies/{role}/{environment}/exists",
+          produces = {"application/json"})
+  public ResponseEntity<?> hasCookies(
+          @PathVariable(value = "role") String role,
+          @PathVariable(value = "environment") String environment) {
+    Optional<CookiesForRoleAndEnvironment> cookies =
+            cookieRepository.findCookies(role, environment);
+    if (cookies.isPresent()) {
+      return ResponseEntity.status(HttpStatus.OK).body(null);
+    }
+    throw new CookiesNotFoundException(role, environment);
+  }
+
+  @GetMapping(
+          value = "/cookies/{role}/{environment}",
+          produces = {"application/json"})
   public CookiesForRoleAndEnvironment getCookies(
-      @PathVariable(value = "role") String role,
-      @PathVariable(value = "environment") String environment) {
-    Optional<CookiesForRoleAndEnvironment> cookies = cookieRepository.findCookies(role, environment);
+          @PathVariable(value = "role") String role,
+          @PathVariable(value = "environment") String environment) {
+    Optional<CookiesForRoleAndEnvironment> cookies =
+            cookieRepository.findCookies(role, environment);
     if (cookies.isPresent()) {
       return cookies.get();
     }
@@ -52,8 +67,8 @@ public class CookiesServiceController {
   }
 
   @RequestMapping(
-      value = "/cookies",
-      method = {POST})
+          value = "/cookies",
+          method = {POST})
   @ResponseBody
   public ResponseEntity<Object> postCookies(@RequestBody String request) {
     CookiesForRoleAndEnvironment cookies;

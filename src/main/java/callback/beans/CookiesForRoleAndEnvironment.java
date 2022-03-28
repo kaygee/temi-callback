@@ -1,5 +1,6 @@
 package callback.beans;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -27,6 +28,7 @@ public class CookiesForRoleAndEnvironment {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @JsonIgnore
   private Long databaseId;
 
   @ElementCollection
@@ -37,6 +39,7 @@ public class CookiesForRoleAndEnvironment {
   @Column(name = "created_on", nullable = false)
   @LastModifiedDate
   @Temporal(TemporalType.TIMESTAMP)
+  @JsonIgnore
   private Date createdOn;
 
   @Column(name = "role")
