@@ -1,16 +1,14 @@
 package callback.repository;
 
-import callback.beans.Cookies;
+import callback.beans.CookiesForRoleAndEnvironment;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.Optional;
 
-public interface CookiesRepository extends JpaRepository<Cookies, Long> {
+public interface CookiesRepository extends JpaRepository<CookiesForRoleAndEnvironment, Long> {
 
   // This is HQL NOT SQL.
-  @Query("FROM Cookies WHERE role = :role AND environment = :environment")
-  Optional<Cookies> findCookies(String role, String environment);
-
-
+  @Query("FROM CookiesForRoleAndEnvironment WHERE role = :role AND environment = :environment")
+  Optional<CookiesForRoleAndEnvironment> findCookies(String role, String environment);
 }

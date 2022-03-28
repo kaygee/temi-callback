@@ -8,7 +8,7 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.Objects;
 
-public class Cookie implements Serializable {
+public class RevCookie implements Serializable {
 
   @Serial
   private static final long serialVersionUID = 5598788231238000275L;
@@ -51,7 +51,7 @@ public class Cookie implements Serializable {
    * @param sameSite The samesite attribute of this cookie; e.g. None, Lax, Strict.
    */
   @JsonCreator
-  public Cookie(
+  public RevCookie(
       @JsonProperty("name") String name,
       @JsonProperty("value") String value,
       @JsonProperty("domain") String domain,
@@ -86,15 +86,15 @@ public class Cookie implements Serializable {
   public boolean equals(Object o) {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
-    Cookie cookie = (Cookie) o;
-    return isSecure == cookie.isSecure
-        && isHttpOnly == cookie.isHttpOnly
-        && Objects.equals(name, cookie.name)
-        && Objects.equals(value, cookie.value)
-        && Objects.equals(path, cookie.path)
-        && Objects.equals(domain, cookie.domain)
-        && Objects.equals(expiry, cookie.expiry)
-        && Objects.equals(sameSite, cookie.sameSite);
+    RevCookie revCookie = (RevCookie) o;
+    return isSecure == revCookie.isSecure
+        && isHttpOnly == revCookie.isHttpOnly
+        && Objects.equals(name, revCookie.name)
+        && Objects.equals(value, revCookie.value)
+        && Objects.equals(path, revCookie.path)
+        && Objects.equals(domain, revCookie.domain)
+        && Objects.equals(expiry, revCookie.expiry)
+        && Objects.equals(sameSite, revCookie.sameSite);
   }
 
   @Override

@@ -1,5 +1,5 @@
-import callback.beans.Cookie;
-import callback.beans.Cookies;
+import callback.beans.CookiesForRoleAndEnvironment;
+import callback.beans.RevCookie;
 import io.restassured.RestAssured;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.filter.Filter;
@@ -23,7 +23,7 @@ import static io.restassured.RestAssured.given;
 import static io.restassured.config.RedirectConfig.redirectConfig;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class CookiesRepositoryTest {
+public class CookiesForRoleAndEnvironmentRepositoryTest {
 
   private static final String LOCALHOST_URL = "http://localhost:7331/";
   private static final String COOKIES_PATH = "cookies/";
@@ -50,15 +50,15 @@ public class CookiesRepositoryTest {
     var environment = RandomStringUtils.randomAlphabetic(30);
     var username = RandomStringUtils.randomAlphabetic(30);
 
-    Cookies postCookies = new Cookies();
+    CookiesForRoleAndEnvironment postCookies = new CookiesForRoleAndEnvironment();
     postCookies.setEnvironment(environment);
     postCookies.setRole(role);
     postCookies.setUsername(username);
 
-    Set<Cookie> cookies = new HashSet<>();
-    var cookie = new Cookie("name", "value", "domain", "path", new Date(), true, true, "same");
-    cookies.add(cookie);
-    postCookies.setCookies(cookies);
+    Set<RevCookie> revCookies = new HashSet<>();
+    var cookie = new RevCookie("name", "value", "domain", "path", new Date(), true, true, "same");
+    revCookies.add(cookie);
+    postCookies.setCookies(revCookies);
 
     var postResponse =
         given()
@@ -72,11 +72,11 @@ public class CookiesRepositoryTest {
     var getPath = GET_COOKIES_PATH.replace("{role}", role).replace("{environment}", environment);
     var getResponse = given().spec(getRequestSpecification()).when().get(getPath).andReturn();
     assertThat(getResponse.getStatusCode()).isEqualTo(HttpStatus.SC_OK);
-    Cookies getCookies = getResponse.as(Cookies.class);
+    CookiesForRoleAndEnvironment getCookies = getResponse.as(CookiesForRoleAndEnvironment.class);
     assertThat(getCookies.getEnvironment()).isEqualTo(environment);
     assertThat(getCookies.getRole()).isEqualTo(role);
     assertThat(getCookies.getUsername()).isEqualTo(username);
-    assertThat(getCookies.getCookies()).isEqualTo(cookies);
+    assertThat(getCookies.getCookies()).isEqualTo(revCookies);
   }
 
   private URL getUrl() {

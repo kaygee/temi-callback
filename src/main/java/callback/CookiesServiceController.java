@@ -1,6 +1,6 @@
 package callback;
 
-import callback.beans.Cookies;
+import callback.beans.CookiesForRoleAndEnvironment;
 import callback.beans.InitializationStatus;
 import callback.exception.CookiesNotFoundException;
 import callback.repository.CookiesRepository;
@@ -41,10 +41,10 @@ public class CookiesServiceController {
   @GetMapping(
       value = "/cookies/{role}/{environment}",
       produces = {"application/json"})
-  public Cookies getCookies(
+  public CookiesForRoleAndEnvironment getCookies(
       @PathVariable(value = "role") String role,
       @PathVariable(value = "environment") String environment) {
-    Optional<Cookies> cookies = cookieRepository.findCookies(role, environment);
+    Optional<CookiesForRoleAndEnvironment> cookies = cookieRepository.findCookies(role, environment);
     if (cookies.isPresent()) {
       return cookies.get();
     }
@@ -56,9 +56,9 @@ public class CookiesServiceController {
       method = {POST})
   @ResponseBody
   public ResponseEntity<Object> postCookies(@RequestBody String request) {
-    Cookies cookies;
+    CookiesForRoleAndEnvironment cookies;
     try {
-      cookies = new ObjectMapper().readValue(request, Cookies.class);
+      cookies = new ObjectMapper().readValue(request, CookiesForRoleAndEnvironment.class);
     } catch (JsonProcessingException e) {
       throw new IllegalArgumentException(e.getMessage());
     }

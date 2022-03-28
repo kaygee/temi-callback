@@ -23,7 +23,7 @@ import java.util.Set;
 @Table(name = "cookies")
 @EntityListeners(AuditingEntityListener.class)
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class Cookies {
+public class CookiesForRoleAndEnvironment {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,7 +32,7 @@ public class Cookies {
   @ElementCollection
   @Column(length = 10000)
   @JsonProperty("cookies")
-  private Set<Cookie> cookies;
+  private Set<RevCookie> revCookies;
 
   @Column(name = "created_on", nullable = false)
   @LastModifiedDate
@@ -51,12 +51,12 @@ public class Cookies {
   @JsonProperty("environment")
   private String environment;
 
-  public Set<Cookie> getCookies() {
-    return cookies;
+  public Set<RevCookie> getCookies() {
+    return revCookies;
   }
 
-  public void setCookies(Set<Cookie> cookies) {
-    this.cookies = cookies;
+  public void setCookies(Set<RevCookie> revCookies) {
+    this.revCookies = revCookies;
   }
 
   public String getRole() {
@@ -103,7 +103,7 @@ public class Cookies {
   public boolean equals(Object o) {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
-    Cookies cookies = (Cookies) o;
+    CookiesForRoleAndEnvironment cookies = (CookiesForRoleAndEnvironment) o;
     return Objects.equals(getDatabaseId(), cookies.getDatabaseId())
         && Objects.equals(getCreatedOn(), cookies.getCreatedOn())
         && Objects.equals(getRole(), cookies.getRole())
