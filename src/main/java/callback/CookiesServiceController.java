@@ -47,7 +47,7 @@ public class CookiesServiceController {
   public ResponseEntity<?> deleteCookies(
       @PathVariable(value = "role") String role,
       @PathVariable(value = "environment") String environment) {
-    LOG.info("Delete request for [" + role + "] in [" + environment + "].");
+    LOG.info("Delete request for role [" + role + "] with environment [" + environment + "].");
     Optional<CookiesForRoleAndEnvironment> cookies =
         cookieRepository.findCookies(role, environment);
     if (cookies.isPresent()) {
@@ -63,7 +63,7 @@ public class CookiesServiceController {
   public ResponseEntity<?> hasCookies(
       @PathVariable(value = "role") String role,
       @PathVariable(value = "environment") String environment) {
-    LOG.info("Exists request for [" + role + "] in [" + environment + "].");
+    LOG.info("Exists request for  role [" + role + "] with environment [" + environment + "].");
     Optional<CookiesForRoleAndEnvironment> cookies =
         cookieRepository.findCookies(role, environment);
     if (cookies.isPresent()) {
@@ -78,7 +78,7 @@ public class CookiesServiceController {
   public CookiesForRoleAndEnvironment getCookies(
       @PathVariable(value = "role") String role,
       @PathVariable(value = "environment") String environment) {
-    LOG.info("Get request for [" + role + "] in [" + environment + "].");
+    LOG.info("Get request for role [" + role + "] with environment [" + environment + "].");
     Optional<CookiesForRoleAndEnvironment> cookies =
         cookieRepository.findCookies(role, environment);
     if (cookies.isPresent()) {
@@ -99,7 +99,11 @@ public class CookiesServiceController {
       throw new IllegalArgumentException(e.getMessage());
     }
     LOG.info(
-        "Saving cookies for [" + cookies.getRole() + "] in [" + cookies.getEnvironment() + "].");
+        "Saving cookies for role ["
+            + cookies.getRole()
+            + "] with environment ["
+            + cookies.getEnvironment()
+            + "].");
     cookieRepository.save(cookies);
     return ResponseEntity.status(HttpStatus.CREATED).body(null);
   }

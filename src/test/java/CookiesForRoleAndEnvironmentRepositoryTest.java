@@ -27,9 +27,12 @@ public class CookiesForRoleAndEnvironmentRepositoryTest {
 
   private static final String LOCALHOST_URL = "http://localhost:7331/";
   private static final String COOKIES_PATH = "cookies/";
+  private static final String DELETE_PATH = "delete/";
   private static final String ROLE_PATH = "{role}/";
-  private static final String ENVIRONMENT_PATH = "{environment}";
+  private static final String ENVIRONMENT_PATH = "{environment}/";
   private static final String GET_COOKIES_PATH = COOKIES_PATH + ROLE_PATH + ENVIRONMENT_PATH;
+  private static final String DELETE_COOKIES_PATH =
+      COOKIES_PATH + ROLE_PATH + ENVIRONMENT_PATH + DELETE_PATH;
 
   @Test
   public void canReturnMethodNotAllowed() {
@@ -42,6 +45,38 @@ public class CookiesForRoleAndEnvironmentRepositoryTest {
     var path = GET_COOKIES_PATH.replace("{role}", "role").replace("{environment}", "environment");
     var response = given().spec(getRequestSpecification()).when().get(path).andReturn();
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.SC_NOT_FOUND);
+  }
+
+  @Test
+  public void canDeleteCookies() {
+    var role = RandomStringUtils.randomAlphabetic(30);
+    var environment = RandomStringUtils.randomAlphabetic(30);
+    var username = RandomStringUtils.randomAlphabetic(30);
+
+    CookiesForRoleAndEnvironment postCookies = new CookiesForRoleAndEnvironment();
+    postCookies.setEnvironment(environment);
+    postCookies.setRole(role);
+    postCookies.setUsername(username);
+
+    Set<RevCookie> revCookies = new HashSet<>();
+    var cookie = new RevCookie("name", "value", "domain", "path", new Date(), true, true, "same");
+    revCookies.add(cookie);
+    postCookies.setCookies(revCookies);
+
+    var postResponse =
+        given()
+            .spec(getRequestSpecification())
+            .when()
+            .body(postCookies)
+            .post(COOKIES_PATH)
+            .andReturn();
+    assertThat(postResponse.getStatusCode()).isEqualTo(HttpStatus.SC_CREATED);
+
+    var deletePath =
+        DELETE_COOKIES_PATH.replace("{role}", role).replace("{environment}", environment);
+    var deleteResponse =
+        given().spec(getRequestSpecification()).when().delete(deletePath).andReturn();
+    assertThat(deleteResponse.getStatusCode()).isEqualTo(HttpStatus.SC_NO_CONTENT);
   }
 
   @Test
