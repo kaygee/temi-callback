@@ -7,19 +7,23 @@
         <link href="/css/main.css" rel="stylesheet">
     </head>
     <body>
-        <h1>Cookie Service Search</h1>
+        <h1>Search the Cookie Service</h1>
+        <p>Search using the Role (not the username) and the environment to
+        retrieve the information for those cookies.</p>
         <#if user?? >
             Your submitted data<br>
             Name: ${roleAndEnvironment.role}<br>
             Message: ${roleAndEnvironment.environment}<br>
         <#else>
-            <form action="/form" method="post">
+            <form action="http://localhost:7331/cookies" method="post">
                 <label for="role">Role:
-                <input type="text" name="role" id="role"/>
+                <input required type="text" name="role" id="role"
+                placeholder="Role"/>
                 </label>
                 <br/><br/>
                 <label for="environment">Environment:
-                <input type="text" name="environment" id="environment"></input>
+                <input required type="text" name="environment"
+                id="environment" placeholder="Environment"></input>
                 </label>
                 <br/><br/>
                 <input type="submit" value="Submit"/>
