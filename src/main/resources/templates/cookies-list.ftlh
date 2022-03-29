@@ -6,7 +6,8 @@
         <link rel="stylesheet" type="text/css" href="/css/style.css"/>
     </head>
     <body>
-        <h1>Cookies List</h1>
+        <h1>Cookie Service List</h1>
+        <p>Total Cookies: ${cookies?size}</p>
         <br/><br/>
         <div>
             <table border="1">
