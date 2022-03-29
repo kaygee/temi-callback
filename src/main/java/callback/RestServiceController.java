@@ -99,7 +99,7 @@ public class RestServiceController {
       throw new IllegalArgumentException(e.getMessage());
     }
     LOG.info(
-        "Saving cookies for role ["
+        "Save request for role ["
             + cookies.getRole()
             + "] with environment ["
             + cookies.getEnvironment()
