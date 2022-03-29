@@ -24,9 +24,9 @@ import java.util.Optional;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 @RestController
-public class CookiesServiceController {
+public class RestServiceController {
 
-  private static final Logger LOG = LoggerFactory.getLogger(CookiesServiceController.class);
+  private static final Logger LOG = LoggerFactory.getLogger(RestServiceController.class);
 
   @Autowired CookiesRepository cookieRepository;
 

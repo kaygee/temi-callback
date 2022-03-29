@@ -42,6 +42,10 @@ public class CookiesForRoleAndEnvironment {
   @JsonIgnore
   private Date createdOn;
 
+  @Column(name = "remember_me", nullable = false)
+  @JsonProperty("remember_me")
+  private boolean rememberMe;
+
   @Column(name = "role")
   @JsonProperty("role")
   private String role;
@@ -53,6 +57,14 @@ public class CookiesForRoleAndEnvironment {
   @Column(name = "environment")
   @JsonProperty("environment")
   private String environment;
+
+  public boolean getRememberMe() {
+    return rememberMe;
+  }
+
+  public void setRememberMe(boolean rememberMe) {
+    this.rememberMe = rememberMe;
+  }
 
   public Set<RevCookie> getCookies() {
     return revCookies;
@@ -106,17 +118,25 @@ public class CookiesForRoleAndEnvironment {
   public boolean equals(Object o) {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
-    CookiesForRoleAndEnvironment cookies = (CookiesForRoleAndEnvironment) o;
-    return Objects.equals(getDatabaseId(), cookies.getDatabaseId())
-        && Objects.equals(getCreatedOn(), cookies.getCreatedOn())
-        && Objects.equals(getRole(), cookies.getRole())
-        && Objects.equals(getUsername(), cookies.getUsername())
-        && Objects.equals(getEnvironment(), cookies.getEnvironment());
+    CookiesForRoleAndEnvironment that = (CookiesForRoleAndEnvironment) o;
+    return Objects.equals(getDatabaseId(), that.getDatabaseId())
+        && Objects.equals(revCookies, that.revCookies)
+        && Objects.equals(getCreatedOn(), that.getCreatedOn())
+        && Objects.equals(getRememberMe(), that.getRememberMe())
+        && Objects.equals(getRole(), that.getRole())
+        && Objects.equals(getUsername(), that.getUsername())
+        && Objects.equals(getEnvironment(), that.getEnvironment());
   }
 
   @Override
   public int hashCode() {
     return Objects.hash(
-        getDatabaseId(), getCreatedOn(), getRole(), getUsername(), getEnvironment());
+        getDatabaseId(),
+        revCookies,
+        getCreatedOn(),
+        getRememberMe(),
+        getRole(),
+        getUsername(),
+        getEnvironment());
   }
 }

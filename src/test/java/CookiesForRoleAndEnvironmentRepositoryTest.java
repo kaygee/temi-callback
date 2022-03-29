@@ -9,6 +9,7 @@ import io.restassured.filter.log.ResponseLoggingFilter;
 import io.restassured.http.ContentType;
 import io.restassured.specification.RequestSpecification;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.commons.lang3.RandomUtils;
 import org.apache.http.HttpStatus;
 import org.junit.Test;
 
@@ -52,6 +53,7 @@ public class CookiesForRoleAndEnvironmentRepositoryTest {
     var role = RandomStringUtils.randomAlphabetic(30);
     var environment = RandomStringUtils.randomAlphabetic(30);
     var username = RandomStringUtils.randomAlphabetic(30);
+    var rememberMe = RandomUtils.nextBoolean();
 
     CookiesForRoleAndEnvironment postCookies = new CookiesForRoleAndEnvironment();
     postCookies.setEnvironment(environment);
@@ -62,6 +64,7 @@ public class CookiesForRoleAndEnvironmentRepositoryTest {
     var cookie = new RevCookie("name", "value", "domain", "path", new Date(), true, true, "same");
     revCookies.add(cookie);
     postCookies.setCookies(revCookies);
+    postCookies.setRememberMe(rememberMe);
 
     var postResponse =
         given()
@@ -84,11 +87,13 @@ public class CookiesForRoleAndEnvironmentRepositoryTest {
     var role = RandomStringUtils.randomAlphabetic(30);
     var environment = RandomStringUtils.randomAlphabetic(30);
     var username = RandomStringUtils.randomAlphabetic(30);
+    var rememberMe = RandomUtils.nextBoolean();
 
     CookiesForRoleAndEnvironment postCookies = new CookiesForRoleAndEnvironment();
     postCookies.setEnvironment(environment);
     postCookies.setRole(role);
     postCookies.setUsername(username);
+    postCookies.setRememberMe(rememberMe);
 
     Set<RevCookie> revCookies = new HashSet<>();
     var cookie = new RevCookie("name", "value", "domain", "path", new Date(), true, true, "same");
@@ -112,6 +117,7 @@ public class CookiesForRoleAndEnvironmentRepositoryTest {
     assertThat(getCookies.getRole()).isEqualTo(role);
     assertThat(getCookies.getUsername()).isEqualTo(username);
     assertThat(getCookies.getCookies()).isEqualTo(revCookies);
+    assertThat(getCookies.getRememberMe()).isEqualTo(rememberMe);
   }
 
   private URL getUrl() {
