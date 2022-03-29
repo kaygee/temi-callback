@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -40,6 +41,20 @@ public class CookiesServiceController {
     } catch (JsonProcessingException e) {
       throw new RuntimeException(e.getMessage());
     }
+  }
+
+  @DeleteMapping(value = "/cookies/{role}/{environment}/delete")
+  public ResponseEntity<?> deleteCookies(
+      @PathVariable(value = "role") String role,
+      @PathVariable(value = "environment") String environment) {
+    LOG.info("Delete request for [" + role + "] in [" + environment + "].");
+    Optional<CookiesForRoleAndEnvironment> cookies =
+        cookieRepository.findCookies(role, environment);
+    if (cookies.isPresent()) {
+      cookieRepository.deleteById(cookies.get().getDatabaseId());
+      return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
+    }
+    throw new CookiesNotFoundException(role, environment);
   }
 
   @GetMapping(
