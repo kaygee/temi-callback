@@ -15,6 +15,7 @@
                     <th>Role</th>
                     <th>Environment</th>
                     <th>Username</th>
+                    <th>Remember Me</th>
                     <th>Created On</th>
                 </tr>
                 <#list cookies as cookie>
@@ -22,6 +23,7 @@
                         <td>${cookie.role}</td>
                         <td>${cookie.environment}</td>
                         <td>${cookie.username}</td>
+                        <td>${cookie.rememberMe?string('yes', 'no')}</td>
                         <td>${cookie.createdOn}</td>
                     </tr>
                 </#list>
