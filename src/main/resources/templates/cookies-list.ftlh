@@ -1,17 +1,18 @@
 <!DOCTYPE HTML>
 <html>
     <head>
-        <meta charset="UTF-8" />
-        <title>Cookies List</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8" />
+        <title>Cookies Service List</title>
         <link rel="stylesheet" type="text/css" href="/css/style.css"/>
+        <script src="/js/filter-rows.js"></script>
     </head>
     <body>
-        <h1>Cookie Service List</h1>
-        <p>Total Cookies: ${cookies?size}</p>
-        <br/><br/>
+        <h1>Cookies</h1>
+        <input type=text" id="filter-input" onkeyup="filterFunction()"
+        placeholder="Search roles...">
         <div>
-            <table border="1">
-                <tr>
+            <table id="cookies-table" border="1">
+                <tr class="header">
                     <th>Role</th>
                     <th>Environment</th>
                     <th>Username</th>
