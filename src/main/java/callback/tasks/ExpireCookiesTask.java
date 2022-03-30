@@ -19,6 +19,7 @@ public class ExpireCookiesTask {
   @Scheduled(cron = "@hourly")
   public void reportCurrentTime() {
     var staleCookies = cookieRepository.findStaleCookies();
+    LOG.info("Found {} stale cookies.", staleCookies.size());
     if (!staleCookies.isEmpty()) {
       LOG.info("Deleting {} stale cookies.", staleCookies.size());
       cookieRepository.deleteAll(staleCookies);
