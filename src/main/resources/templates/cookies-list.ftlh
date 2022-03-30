@@ -17,6 +17,7 @@
                     <th>Username</th>
                     <th>Remember Me</th>
                     <th>Created On</th>
+                    <th>Expires On</th>
                 </tr>
                 <#list cookies as cookie>
                     <tr>
@@ -25,6 +26,7 @@
                         <td>${cookie.username}</td>
                         <td>${cookie.rememberMe?string('yes', 'no')}</td>
                         <td>${cookie.createdOn}</td>
+                        <td>${cookie.expiresOn}</td>
                     </tr>
                 </#list>
             </table>

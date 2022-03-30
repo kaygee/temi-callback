@@ -3,7 +3,7 @@ package callback.beans;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.Column;
@@ -13,18 +13,25 @@ import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.PrePersist;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.Date;
 import java.util.Objects;
 import java.util.Set;
+
+import static java.time.temporal.ChronoUnit.DAYS;
 
 @Entity
 @Table(name = "cookies")
 @EntityListeners(AuditingEntityListener.class)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class CookiesForRoleAndEnvironment {
+
+  private static final int REMEMBER_ME_DAYS = 28;
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -37,10 +44,15 @@ public class CookiesForRoleAndEnvironment {
   private Set<RevCookie> revCookies;
 
   @Column(name = "created_on", nullable = false)
-  @LastModifiedDate
+  @CreatedDate
   @Temporal(TemporalType.TIMESTAMP)
   @JsonIgnore
   private Date createdOn;
+
+  @Column(name = "expires_on", nullable = false)
+  @Temporal(TemporalType.TIMESTAMP)
+  @JsonIgnore
+  private Date expiresOn;
 
   @Column(name = "remember_me", nullable = false)
   @JsonProperty("remember_me")
@@ -57,6 +69,20 @@ public class CookiesForRoleAndEnvironment {
   @Column(name = "environment")
   @JsonProperty("environment")
   private String environment;
+
+  @PrePersist
+  private void prePersistExpiresOn() {
+    LocalDateTime futureExpirationDate = LocalDateTime.now().plus(REMEMBER_ME_DAYS, DAYS);
+    expiresOn = Date.from(futureExpirationDate.toInstant(ZoneOffset.UTC));
+  }
+
+  public Date getExpiresOn() {
+    return expiresOn;
+  }
+
+  public void setExpiresOn(Date expiresOn) {
+    this.expiresOn = expiresOn;
+  }
 
   public boolean getRememberMe() {
     return rememberMe;
