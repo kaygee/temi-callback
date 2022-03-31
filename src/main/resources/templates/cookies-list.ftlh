@@ -13,6 +13,7 @@
         <div>
             <table id="cookies-table" border="1">
                 <tr class="header">
+                    <th>ID</th>
                     <th>Role</th>
                     <th>Environment</th>
                     <th>Username</th>
@@ -22,6 +23,7 @@
                 </tr>
                 <#list cookies as cookie>
                     <tr>
+                        <td>${cookie.databaseId}</td>
                         <td>${cookie.role}</td>
                         <td>${cookie.environment}</td>
                         <td>${cookie.username}</td>
