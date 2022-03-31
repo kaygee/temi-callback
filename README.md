@@ -35,14 +35,14 @@ I use an in-memory database to keep track of all the callback requests I get.
 - `docker-compose up cookies-service --rm`
 
 ## Debugging in IntelliJ
-To debug the application locally set your breakpoint, right click the `main` method, and choose `Debug`.
+To debug the application locally set your breakpoint, right-click the `main` method, and choose `Debug`.
 
 `public static void main(String[] args) {SpringApplication.run(Application.class, args);}` 
 
 ## Methods
 - Health
 -- `/health` - Is a health check for the application.
-- Cookies CRUD
+- Cookies related methods
 -- DELETE - `/cookies/{role}/{environment}/delete` - delete the cookies.
 -- GET - `/cookies/{role}/{environment}/exists` - do cookies exist?
 -- GET - `/cookies/{role}/{environment}` - get the cookies.
