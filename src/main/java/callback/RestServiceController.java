@@ -73,7 +73,7 @@ public class RestServiceController {
   }
 
   @GetMapping(
-      value = "/cookies/{role}/{environment}",
+      value = "/cookies/{role}/{environment}/get",
       produces = {"application/json"})
   public CookiesForRoleAndEnvironment getCookies(
       @PathVariable(value = "role") String role,

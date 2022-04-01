@@ -29,9 +29,11 @@ public class CookiesForRoleAndEnvironmentRepositoryTest {
   private static final String LOCALHOST_URL = "http://localhost:7331/";
   private static final String COOKIES_PATH = "cookies/";
   private static final String DELETE_PATH = "delete/";
+  private static final String GET_PATH = "get/";
   private static final String ROLE_PATH = "{role}/";
   private static final String ENVIRONMENT_PATH = "{environment}/";
-  private static final String GET_COOKIES_PATH = COOKIES_PATH + ROLE_PATH + ENVIRONMENT_PATH;
+  private static final String GET_COOKIES_PATH =
+      COOKIES_PATH + ROLE_PATH + ENVIRONMENT_PATH + GET_PATH;
   private static final String DELETE_COOKIES_PATH =
       COOKIES_PATH + ROLE_PATH + ENVIRONMENT_PATH + DELETE_PATH;
 
