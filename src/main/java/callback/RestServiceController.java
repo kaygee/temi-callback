@@ -66,7 +66,7 @@ public class RestServiceController {
   public ResponseEntity<?> hasCookies(
       @PathVariable(value = "role") String role,
       @PathVariable(value = "environment") String environment) {
-    LOG.info("Exists request for  role [" + role + "] with environment [" + environment + "].");
+    LOG.info("Exists request for role [" + role + "] with environment [" + environment + "].");
     Optional<CookiesForRoleAndEnvironment> cookies =
         cookieRepository.findCookies(role, environment);
     if (cookies.isPresent()) {

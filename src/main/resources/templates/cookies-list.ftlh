@@ -9,7 +9,7 @@
     <body>
         <h1>Cookies</h1>
         <input type=text" id="filter-input" onkeyup="filterFunction()"
-        placeholder="Search roles...">
+        placeholder="Search ${cookies?size} role(s)...">
         <div>
             <table id="cookies-table" border="1">
                 <tr class="header">
