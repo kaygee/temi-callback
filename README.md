@@ -34,6 +34,9 @@ I use an in-memory database to keep track of all the callback requests I get.
 - Change to the `docker` directory.
 - `docker-compose up cookies-service --rm`
 
+## Front-end
+- Navigate to http://localhost:7331 and you'll be redirected to a list of Cookies that are stored.
+
 ## Debugging in IntelliJ
 To debug the application locally set your breakpoint, right-click the `main` method, and choose `Debug`.
 
