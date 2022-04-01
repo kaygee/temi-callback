@@ -17,7 +17,7 @@ public class ExpireCookiesTask {
 
   @Async
   @Scheduled(cron = "@hourly")
-  public void reportCurrentTime() {
+  public void expireCookies() {
     var staleCookies = cookieRepository.findStaleCookies();
     LOG.info("Found {} stale cookies.", staleCookies.size());
     if (!staleCookies.isEmpty()) {
