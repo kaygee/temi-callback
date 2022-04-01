@@ -17,6 +17,7 @@ import javax.persistence.PrePersist;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.UniqueConstraint;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.Date;
@@ -26,7 +27,9 @@ import java.util.Set;
 import static java.time.temporal.ChronoUnit.DAYS;
 
 @Entity
-@Table(name = "cookies")
+@Table(
+    name = "cookies",
+    uniqueConstraints = {@UniqueConstraint(columnNames = {"role", "environment"})})
 @EntityListeners(AuditingEntityListener.class)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class CookiesForRoleAndEnvironment {

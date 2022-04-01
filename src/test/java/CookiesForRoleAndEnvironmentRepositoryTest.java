@@ -51,6 +51,11 @@ public class CookiesForRoleAndEnvironmentRepositoryTest {
   }
 
   @Test
+  public void cannotSaveTheSameRoleAndEnvironmentMultipleTimes(){
+    
+  }
+
+  @Test
   public void canDeleteCookies() {
     var role = RandomStringUtils.randomAlphabetic(30);
     var environment = RandomStringUtils.randomAlphabetic(30);
