@@ -7,6 +7,7 @@ import io.restassured.filter.log.ErrorLoggingFilter;
 import io.restassured.filter.log.RequestLoggingFilter;
 import io.restassured.filter.log.ResponseLoggingFilter;
 import io.restassured.http.ContentType;
+import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.RandomUtils;
@@ -22,6 +23,10 @@ import java.util.Set;
 
 import static io.restassured.RestAssured.given;
 import static io.restassured.config.RedirectConfig.redirectConfig;
+import static org.apache.http.HttpStatus.SC_CONFLICT;
+import static org.apache.http.HttpStatus.SC_CREATED;
+import static org.apache.http.HttpStatus.SC_METHOD_NOT_ALLOWED;
+import static org.apache.http.HttpStatus.SC_NOT_FOUND;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class CookiesForRoleAndEnvironmentRepositoryTest {
@@ -40,19 +45,39 @@ public class CookiesForRoleAndEnvironmentRepositoryTest {
   @Test
   public void canReturnMethodNotAllowed() {
     var response = given().spec(getRequestSpecification()).when().get(COOKIES_PATH).andReturn();
-    assertThat(response.getStatusCode()).isEqualTo(HttpStatus.SC_METHOD_NOT_ALLOWED);
+    assertThat(response.getStatusCode()).isEqualTo(SC_METHOD_NOT_ALLOWED);
   }
 
   @Test
   public void canReturnNotFound() {
     var path = GET_COOKIES_PATH.replace("{role}", "role").replace("{environment}", "environment");
     var response = given().spec(getRequestSpecification()).when().get(path).andReturn();
-    assertThat(response.getStatusCode()).isEqualTo(HttpStatus.SC_NOT_FOUND);
+    assertThat(response.getStatusCode()).isEqualTo(SC_NOT_FOUND);
   }
 
   @Test
-  public void cannotSaveTheSameRoleAndEnvironmentMultipleTimes(){
-    
+  public void cannotSaveTheSameRoleAndEnvironmentMultipleTimes() {
+    var role = RandomStringUtils.randomAlphabetic(30);
+    var environment = RandomStringUtils.randomAlphabetic(30);
+    var username = RandomStringUtils.randomAlphabetic(30);
+    var rememberMe = RandomUtils.nextBoolean();
+
+    CookiesForRoleAndEnvironment postCookies = new CookiesForRoleAndEnvironment();
+    postCookies.setEnvironment(environment);
+    postCookies.setRole(role);
+    postCookies.setUsername(username);
+
+    Set<RevCookie> revCookies = new HashSet<>();
+    var cookie = new RevCookie("name", "value", "domain", "path", new Date(), true, true, "same");
+    revCookies.add(cookie);
+    postCookies.setCookies(revCookies);
+    postCookies.setRememberMe(rememberMe);
+
+    var uniquePostResponse = saveCookies(postCookies);
+    assertThat(uniquePostResponse.getStatusCode()).isEqualTo(SC_CREATED);
+
+    var duplicatePostResponse = saveCookies(postCookies);
+    assertThat(duplicatePostResponse.getStatusCode()).isEqualTo(SC_CONFLICT);
   }
 
   @Test
@@ -73,13 +98,7 @@ public class CookiesForRoleAndEnvironmentRepositoryTest {
     postCookies.setCookies(revCookies);
     postCookies.setRememberMe(rememberMe);
 
-    var postResponse =
-        given()
-            .spec(getRequestSpecification())
-            .when()
-            .body(postCookies)
-            .post(COOKIES_PATH)
-            .andReturn();
+    var postResponse = saveCookies(postCookies);
     assertThat(postResponse.getStatusCode()).isEqualTo(HttpStatus.SC_CREATED);
 
     var deletePath =
@@ -87,6 +106,17 @@ public class CookiesForRoleAndEnvironmentRepositoryTest {
     var deleteResponse =
         given().spec(getRequestSpecification()).when().delete(deletePath).andReturn();
     assertThat(deleteResponse.getStatusCode()).isEqualTo(HttpStatus.SC_NO_CONTENT);
+  }
+
+  private Response saveCookies(CookiesForRoleAndEnvironment postCookies) {
+    var postResponse =
+        given()
+            .spec(getRequestSpecification())
+            .when()
+            .body(postCookies)
+            .post(COOKIES_PATH)
+            .andReturn();
+    return postResponse;
   }
 
   @Test
@@ -114,7 +144,7 @@ public class CookiesForRoleAndEnvironmentRepositoryTest {
             .body(postCookies)
             .post(COOKIES_PATH)
             .andReturn();
-    assertThat(postResponse.getStatusCode()).isEqualTo(HttpStatus.SC_CREATED);
+    assertThat(postResponse.getStatusCode()).isEqualTo(SC_CREATED);
 
     var getPath = GET_COOKIES_PATH.replace("{role}", role).replace("{environment}", environment);
     var getResponse = given().spec(getRequestSpecification()).when().get(getPath).andReturn();

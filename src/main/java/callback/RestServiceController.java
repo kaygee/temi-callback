@@ -9,6 +9,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -21,6 +22,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Optional;
 
+import static org.springframework.http.HttpStatus.CONFLICT;
+import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 @RestController
@@ -104,7 +107,11 @@ public class RestServiceController {
             + "] with environment ["
             + cookies.getEnvironment()
             + "].");
-    cookieRepository.save(cookies);
-    return ResponseEntity.status(HttpStatus.CREATED).body(null);
+    try {
+      cookieRepository.save(cookies);
+    } catch (DataIntegrityViolationException e) {
+      return ResponseEntity.status(CONFLICT).body(null);
+    }
+    return ResponseEntity.status(CREATED).body(null);
   }
 }
