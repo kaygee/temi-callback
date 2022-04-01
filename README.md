@@ -45,5 +45,5 @@ To debug the application locally set your breakpoint, right-click the `main` met
 - Cookies related methods
 -- DELETE - `/cookies/{role}/{environment}/delete` - delete the cookies.
 -- GET - `/cookies/{role}/{environment}/exists` - do cookies exist?
--- GET - `/cookies/{role}/{environment}` - get the cookies.
+-- GET - `/cookies/{role}/{environment}/get` - get the cookies.
 -- POST - `/cookies` - save the cookies.
