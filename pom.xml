@@ -16,8 +16,8 @@
 
     <properties>
         <java.version>17</java.version>
-        <maven.compiler.source>1.17</maven.compiler.source>
-        <maven.compiler.target>1.17</maven.compiler.target>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
         <rest.assured.version>5.0.0</rest.assured.version>
         <selenium.version>4.1.2</selenium.version>
     </properties>
