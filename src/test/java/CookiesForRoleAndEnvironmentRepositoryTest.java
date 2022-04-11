@@ -109,14 +109,12 @@ public class CookiesForRoleAndEnvironmentRepositoryTest {
   }
 
   private Response saveCookies(CookiesForRoleAndEnvironment postCookies) {
-    var postResponse =
-        given()
-            .spec(getRequestSpecification())
-            .when()
-            .body(postCookies)
-            .post(COOKIES_PATH)
-            .andReturn();
-    return postResponse;
+    return given()
+        .spec(getRequestSpecification())
+        .when()
+        .body(postCookies)
+        .post(COOKIES_PATH)
+        .andReturn();
   }
 
   @Test
