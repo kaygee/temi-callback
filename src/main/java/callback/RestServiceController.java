@@ -85,6 +85,10 @@ public class RestServiceController {
     Optional<CookiesForRoleAndEnvironment> cookies =
         cookieRepository.findCookies(role, environment);
     if (cookies.isPresent()) {
+      CookiesForRoleAndEnvironment cookiesForRoleAndEnvironment = cookies.get();
+      var usageCount = cookiesForRoleAndEnvironment.getUsageCount();
+      cookiesForRoleAndEnvironment.setUsageCount(usageCount + 1);
+      cookieRepository.save(cookiesForRoleAndEnvironment);
       return cookies.get();
     }
     throw new CookiesNotFoundException(role, environment);

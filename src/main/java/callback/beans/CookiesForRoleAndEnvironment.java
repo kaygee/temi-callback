@@ -52,6 +52,10 @@ public class CookiesForRoleAndEnvironment {
   @JsonIgnore
   private Date createdOn;
 
+  @Column(name = "usage_count", nullable = false)
+  @JsonIgnore
+  private int usageCount;
+
   @Column(name = "expires_on", nullable = false)
   @Temporal(TemporalType.TIMESTAMP)
   @JsonIgnore
@@ -77,6 +81,14 @@ public class CookiesForRoleAndEnvironment {
   private void prePersistExpiresOn() {
     LocalDateTime futureExpirationDate = LocalDateTime.now().plus(REMEMBER_ME_DAYS, DAYS);
     expiresOn = Date.from(futureExpirationDate.toInstant(ZoneOffset.UTC));
+  }
+
+  public int getUsageCount() {
+    return usageCount;
+  }
+
+  public void setUsageCount(int usageCount) {
+    this.usageCount = usageCount;
   }
 
   public Date getExpiresOn() {

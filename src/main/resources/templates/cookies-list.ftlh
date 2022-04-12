@@ -17,6 +17,7 @@
                     <th>Environment</th>
                     <th>Username</th>
                     <th>Remember Me</th>
+                    <th>Usage Count</th>
                     <th>Created On</th>
                     <th>Expires On</th>
                 </tr>
@@ -26,6 +27,7 @@
                         <td>${cookie.environment}</td>
                         <td>${cookie.username}</td>
                         <td>${cookie.rememberMe?string('yes', 'no')}</td>
+                        <td>${cookie.usageCount}</td>
                         <td>${cookie.createdOn}</td>
                         <td>${cookie.expiresOn}</td>
                     </tr>
